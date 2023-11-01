@@ -579,17 +579,6 @@ const checkCdn = () => {
 		});
 	});
 }
-/** 取到可用域名為止 */
-const startCheck = async () => {
-	try {
-		await checkCdn();
-	} catch (e) {
-	}
-	if (!curCdn) {
-		await wait(1000);
-		startCheck();
-	}
-}
 
 self.addEventListener('install', function (event) {
 	console.warn("serviceWorker sw install!", version);
@@ -665,6 +654,7 @@ self.addEventListener('message', (event) => {
 						}
 					}
 				};
+				console.warn("serviceWorker sw curCdn=", curCdn);
 				checkHtml();
 
 			}
@@ -686,7 +676,7 @@ self.addEventListener('fetch', function (event) {
 	// 	console.warn("serviceWorker sw 排除非當前域名", requestUrl, self.location.origin, version);
 	// 	return false;
 	// }
-	var uri = new URL(requestUrl)	
+	var uri = new URL(requestUrl)
 	if (uri.pathname.indexOf(domainPath) == -1) {
 		console.warn("serviceWorker sw 排除非當前目錄", requestUrl, self.location.origin, version);
 		return false;
