@@ -659,6 +659,7 @@ self.addEventListener('fetch', function (event) {
 		// console.warn("serviceWorker sw 排除非當前目錄", requestUrl, self.location.origin, version);
 		return false;
 	}
+	if (requestUrl.indexOf("/pwa_dir/") != -1) return false;
 	//去掉網址參數
 	if (requestUrl.indexOf("?") != -1) requestUrl = requestUrl.split("?")[0];
 	//替換url host
@@ -667,7 +668,7 @@ self.addEventListener('fetch', function (event) {
 		replaceUrl = requestUrl.replace(uri.origin, curCdn);
 		replaceUrl = replaceUrl.replace(domainPath, gamePath);
 	}
-	// console.warn("serviceWorker sw replace", requestUrl, replaceUrl, version);
+	console.warn("serviceWorker sw replace", requestUrl, replaceUrl, version);
 	event.respondWith(async function () {
 		var response;
 		try {
