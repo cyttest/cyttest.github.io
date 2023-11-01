@@ -1,5 +1,5 @@
 // 缓存
-var version = "4.0.8.13";
+var version = "4.0.8.12";
 var htmlVersion;
 var self = this;
 var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
