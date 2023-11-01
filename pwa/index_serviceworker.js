@@ -579,19 +579,21 @@ async function startCheck() {
 	try {
 		await checkCdn();
 		console.warn("serviceWorker sw checkCdn end", bWaitCdn, version);
-		if (bWaitCdn) {
-			// 向客户端发送消息
-			self.clients.matchAll().then(clients => {
-				clients.forEach(client => {
-					console.warn("serviceWorker sw postMessage to client reload", version);
-					client.postMessage({ type: "reload" });
-				});
-			});
-		}
+		if (bWaitCdn) callReload();
 	} catch (e) {
 		console.error("serviceWorker sw checkCdn fail", cccc++, e.toString(), version);
 		setTimeout(startCheck, 3000);
 	}
+}
+
+function callReload() {
+	// 向客户端发送消息
+	self.clients.matchAll().then(clients => {
+		clients.forEach(client => {
+			console.warn("serviceWorker sw postMessage to client reload", version);
+			client.postMessage({ type: "reload" });
+		});
+	});
 }
 
 /** 檢查是否為當前版本檔案 */
@@ -640,8 +642,11 @@ self.addEventListener('message', (event) => {
 	console.warn("serviceWorker sw message", event.data, version);
 	if (event.data) {
 		if (event.data.type === 'CHECK') {
-			bWaitCdn = true;
-			console.warn("serviceWorker sw message CHECK", bWaitCdn);
+			console.warn("serviceWorker sw message CHECK", curCdn);
+			if (curCdn)
+				callReload();
+			else
+				bWaitCdn = true;
 		} else if (event.data.type === 'VERSION') {
 			htmlVersion = event.data.value;
 			console.warn("serviceWorker sw message htmlVersion=", htmlVersion);
@@ -715,7 +720,7 @@ self.addEventListener('fetch', function (event) {
 				}
 			}
 		} catch (e) {
-			console.error("serviceWorker sw fetch fail", requestUrl, e.toString(), version);			
+			console.error("serviceWorker sw fetch fail", requestUrl, e.toString(), version);
 		}
 		return response;
 	}());
