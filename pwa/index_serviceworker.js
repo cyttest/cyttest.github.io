@@ -1,5 +1,5 @@
 // 缓存
-var version = "4.0.8.11";
+var version = "4.0.8.13";
 var htmlVersion;
 var self = this;
 var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -686,17 +686,13 @@ self.addEventListener('fetch', function (event) {
 	// 	console.warn("serviceWorker sw 排除非當前域名", requestUrl, self.location.origin, version);
 	// 	return false;
 	// }
-	if (requestUrl.indexOf(domainPath) == -1) {
+	var uri = new URL(requestUrl)	
+	if (uri.pathname.indexOf(domainPath) == -1) {
 		console.warn("serviceWorker sw 排除非當前目錄", requestUrl, self.location.origin, version);
 		return false;
 	}
-	//去掉網址參數
-	if (requestUrl.indexOf("?") != -1)
-		requestUrl = requestUrl.split("?")[0];
 	//替換url host
-	var uri = new URL(requestUrl)
-	var replaceUrl = requestUrl.replace(uri.origin, curCdn);
-	replaceUrl = replaceUrl.replace(domainPath, gamePath);
+	var replaceUrl = curCdn + uri.pathname.replace(domainPath, gamePath);
 	// console.warn("serviceWorker sw replace", requestUrl, replaceUrl, version);
 	event.respondWith(async function () {
 		try {
