@@ -249,7 +249,6 @@
 	<script>
 		var ua = navigator.userAgent || navigator.vendor || window.opera;
 		var pwa = (navigator.standalone || window.matchMedia("(display-mode: fullscreen)").matches);
-		pwa = true
 		if (pwa) {
 			cacheHandle();
 			function cacheHandle() {
@@ -260,7 +259,7 @@
 						bUrlLogout = true;
 						bReloading = true;
 						console.warn('===================  window.location.reload =======================', performance.now());
-						// window.location.reload();
+						window.location.reload();
 					}
 				}
 				if ('serviceWorker' in navigator) {
@@ -290,10 +289,10 @@
 						} else if (reg.active) {
 							console.warn('serviceWorker active', performance.now());
 							curState = reg.active;
-							// reg.onupdatefound = function () {
-							// 	console.warn("serviceWorker onupdatefound", performance.now());
-							// 	reload();
-							// }
+							reg.onupdatefound = function () {
+								console.warn("serviceWorker onupdatefound", performance.now());
+								reload();
+							}
 						}
 						if (curState) {
 							curState.addEventListener("statechange", (e) => {
