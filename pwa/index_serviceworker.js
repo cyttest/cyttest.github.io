@@ -691,8 +691,12 @@ self.addEventListener('fetch', function (event) {
 		console.warn("serviceWorker sw 排除非當前目錄", requestUrl, self.location.origin, version);
 		return false;
 	}
+	//去掉網址參數
+	if (requestUrl.indexOf("?") != -1)
+		requestUrl = requestUrl.split("?")[0];
 	//替換url host
-	var replaceUrl = curCdn + uri.pathname.replace(domainPath, gamePath);
+	var replaceUrl = requestUrl.replace(uri.origin, curCdn);
+	replaceUrl = replaceUrl.replace(domainPath, gamePath);
 	// console.warn("serviceWorker sw replace", requestUrl, replaceUrl, version);
 	event.respondWith(async function () {
 		try {
