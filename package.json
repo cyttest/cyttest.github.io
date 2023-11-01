@@ -1,0 +1,24 @@
+{
+  "name": "pwa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "gh-pages -d src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyttest/pwa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cyttest/pwa/issues"
+  },
+  "homepage": "https://github.com/cyttest/pwa#readme",
+  "dependencies": {
+    "gh-pages": "^6.0.0"
+  }
+}
