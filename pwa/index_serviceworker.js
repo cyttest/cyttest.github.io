@@ -10,7 +10,6 @@ let domainPath = self.location.pathname.substring(0, idx + 1);
 var gamePath = "/h5V01/m/";
 // var gamePath = "/bin-release/m/";
 var gameHtml = self.location.origin + domainPath + "index.html";
-var curCdn;
 var cdnRes = [
 	// "https://cdnx-ali.quietryo.com",
 	// "https://cdnx-hw.mjjhfer.com",
@@ -20,22 +19,30 @@ var cdnRes = [
 	// "https://cdnx-beta.hswenfa2.com",
 	"https://cdnx-beta.hswenfa.com"
 ];
+var cccc = 0
+var curCdn;
+var bWaitCdn = false;
+console.warn("serviceWorker sw init curCdn=", curCdn);
+console.warn("serviceWorker sw init domainPath=", domainPath);
+console.warn("serviceWorker sw init gamePath=", gamePath);
+startCheck();
+
 var cacheList = [
 	"index.html",
-	"libs/assetsmanager-d8261130f8.min.js",
-	"libs/BGGameLib-e6253c61ef.min.js",
-	"libs/dragonBones-d3e55aba9d.min.js",
-	"libs/egret-2930803256.web.min.js",
-	"libs/egret-a3ba4fff55.min.js",
-	"libs/eui-55be2cff38.min.js",
-	"libs/ExternalLib-4683577df1.min.js",
-	"libs/game-92641ed6bb.min.js",
-	"libs/h5module-18c6000611.js",
-	"libs/index-9d8270ebed.js",
-	"libs/main-ca9c03687d.js",
-	"libs/promise-1db72e0812.min.js",
-	"libs/soundjs-be02be4ef1.min.js",
-	"libs/tween-20f8a48b47.min.js",
+	// "libs/assetsmanager-d8261130f8.min.js",
+	// "libs/BGGameLib-e6253c61ef.min.js",
+	// "libs/dragonBones-d3e55aba9d.min.js",
+	// "libs/egret-2930803256.web.min.js",
+	// "libs/egret-a3ba4fff55.min.js",
+	// "libs/eui-55be2cff38.min.js",
+	// "libs/ExternalLib-4683577df1.min.js",
+	// "libs/game-92641ed6bb.min.js",
+	// "libs/h5module-18c6000611.js",
+	// "libs/index-9d8270ebed.js",
+	// "libs/main-ca9c03687d.js",
+	// "libs/promise-1db72e0812.min.js",
+	// "libs/soundjs-be02be4ef1.min.js",
+	// "libs/tween-20f8a48b47.min.js",
 	"resource/assets/common/common_window-47a9508c59.bgjson",
 	"resource/assets/common/common_window-a3448e9651.bgpng",
 	"resource/assets/common/fnt/roadFntSheet_en_US_M-8d777f7e29.bgfnt",
@@ -530,24 +537,12 @@ var cacheList = [
 ]
 
 
-const wait = (ms) => {
+async function wait(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
-/** 檢查是否為當前版本檔案 */
-const checkUrl = (url) => {
-	var uri = new URL(url);
-	url = uri.pathname.replace(domainPath, "");
-	// if (url == "index.html" != -1)
-	// 	return true;
-	// 只處理當前目錄
-	if (cacheList.includes(url))
-		return true;
-	return false;
-}
 
-var cccc = 0
 /** 檢查可用線路 */
-const checkCdn = () => {
+async function checkCdn() {
 	console.warn("serviceWorker sw checkCdn!", version);
 	let failCount = 0;
 	let bSuccess = false;
@@ -580,6 +575,35 @@ const checkCdn = () => {
 	});
 }
 
+async function startCheck() {
+	try {
+		await checkCdn();
+		console.warn("serviceWorker sw checkCdn end", bWaitCdn, version);
+		if (bWaitCdn) {
+			// 向客户端发送消息
+			self.clients.matchAll().then(clients => {
+				clients.forEach(client => {
+					console.warn("serviceWorker sw postMessage to client reload", version);
+					client.postMessage({ type: "reload" });
+				});
+			});
+		}
+	} catch (e) {
+		console.error("serviceWorker sw checkCdn fail", cccc++, e.toString(), version);
+		setTimeout(startCheck, 3000);
+	}
+}
+
+/** 檢查是否為當前版本檔案 */
+function checkUrl(url) {
+	var uri = new URL(url);
+	url = uri.pathname.replace(domainPath, "");
+	// 只處理當前目錄
+	var bIn = cacheList.includes(url);
+	// console.warn("serviceWorker sw  checkUrl", url, bIn)
+	return bIn;
+}
+
 self.addEventListener('install', function (event) {
 	console.warn("serviceWorker sw install!", version);
 	self.skipWaiting();
@@ -591,10 +615,9 @@ self.addEventListener('activate', function (event) {
 		const openCache = await caches.open(openName);
 		const keyNames = await openCache.keys();
 		await Promise.all(keyNames.map(function (request) {
-			console.warn("serviceWorker sw check", fileName, version);
 			//比對檔名是否存在於清單之中 不存在就清除
 			var fileName = request.url;
-			if (checkUrl(fileName) == false || (fileName.indexOf(indexHtml) != -1 && fileName != indexVerHtml)) {
+			if (checkUrl(fileName) == false) {
 				console.warn("serviceWorker sw deleteCurCache delete", fileName, version);
 				return openCache.delete(request);
 			}
@@ -609,55 +632,19 @@ self.addEventListener('activate', function (event) {
 	}
 	console.warn("serviceWorker sw activate", version);
 	self.clients.claim();
-	// event.waitUntil(doDeleteJob());
+	event.waitUntil(doDeleteJob());
 });
 
 
 self.addEventListener('message', (event) => {
 	console.warn("serviceWorker sw message", event.data, version);
 	if (event.data) {
-		if (event.data.value == version) {
-			if (event.data.type === 'VERSION') {
-				htmlVersion = event.data.value;
-				const checkHtml = async () => {
-					if (curCdn) {
-						// try {
-						// 	console.warn("serviceWorker sw checkHtml", version);
-						// 	var uri = new URL(gameHtml)
-						// 	var replaceUrl = gameHtml.replace(uri.origin, curCdn);
-						// 	replaceUrl = replaceUrl.replace(domainPath, gamePath);
-						// 	var response = await fetch(replaceUrl);
-						// 	if (response && response.status == 200) {
-						// 		var cloneRes = response.clone();
-						// 		const cache = await caches.open(openName);
-						// 		await cache.put(gameHtml, cloneRes);
-						// 		console.warn("serviceWorker sw checkHtml  success", version);
-						// 	}
-						// } catch (e) {
-						// 	console.error("serviceWorker sw checkHtml fail", e.toString(), version);
-						// }
-					} else {
-						while (!curCdn) {
-							try {
-								await checkCdn();
-								// 向客户端发送消息
-								self.clients.matchAll().then(clients => {
-									clients.forEach(client => {
-										console.warn("serviceWorker sw postMessage to client reload", version);
-										client.postMessage({ type: "reload" });
-									});
-								});
-							} catch (e) {
-								console.error("serviceWorker sw checkCdn fail", cccc++, e.toString(), version);
-								await wait(3000);
-							}
-						}
-					}
-				};
-				console.warn("serviceWorker sw curCdn=", curCdn);
-				checkHtml();
-
-			}
+		if (event.data.type === 'CHECK') {
+			bWaitCdn = true;
+			console.warn("serviceWorker sw message CHECK", bWaitCdn);
+		} else if (event.data.type === 'VERSION') {
+			htmlVersion = event.data.value;
+			console.warn("serviceWorker sw message htmlVersion=", htmlVersion);
 		}
 	}
 });
@@ -665,33 +652,26 @@ self.addEventListener('message', (event) => {
 self.addEventListener('fetch', function (event) {
 	var request = event.request;
 	var requestUrl = request.url;
-	// console.warn("serviceWorker sw fetch", requestUrl, curCdn, version);
-	if (!curCdn) return false;
 	// 只对 get 类型的请求进行拦截处理
 	if (request.method !== 'GET') return false;
-	// 不處理mp4
-	// if (requestUrl.indexOf("mp4") != -1) return false;
-	// 排除非當前域名
-	// if (requestUrl.indexOf(self.location.origin) == -1) {
-	// 	console.warn("serviceWorker sw 排除非當前域名", requestUrl, self.location.origin, version);
-	// 	return false;
-	// }
 	var uri = new URL(requestUrl)
 	if (uri.pathname.indexOf(domainPath) == -1) {
-		console.warn("serviceWorker sw 排除非當前目錄", requestUrl, self.location.origin, version);
+		// console.warn("serviceWorker sw 排除非當前目錄", requestUrl, self.location.origin, version);
 		return false;
 	}
 	//去掉網址參數
-	if (requestUrl.indexOf("?") != -1)
-		requestUrl = requestUrl.split("?")[0];
+	if (requestUrl.indexOf("?") != -1) requestUrl = requestUrl.split("?")[0];
 	//替換url host
-	var replaceUrl = requestUrl.replace(uri.origin, curCdn);
-	replaceUrl = replaceUrl.replace(domainPath, gamePath);
+	var replaceUrl;
+	if (curCdn) {
+		replaceUrl = requestUrl.replace(uri.origin, curCdn);
+		replaceUrl = replaceUrl.replace(domainPath, gamePath);
+	}
 	// console.warn("serviceWorker sw replace", requestUrl, replaceUrl, version);
 	event.respondWith(async function () {
+		var response;
 		try {
-			var response;
-			if (requestUrl == gameHtml) {
+			if (requestUrl == gameHtml && replaceUrl) {
 				//html 每次都抓取新的,抓取不到才使用緩存的
 				try {
 					response = await fetch(replaceUrl);
@@ -710,56 +690,32 @@ self.addEventListener('fetch', function (event) {
 			} else {
 				response = await caches.match(requestUrl);
 				if (!response) {
-					response = await fetch(replaceUrl);
-					if (response && response.status == 200) {
-						if (checkUrl(requestUrl)) {
-							if (version == htmlVersion) {
-								var cloneRes = response.clone();
-								var openCache = await caches.open(openName);
-								console.warn("serviceWorker sw put", requestUrl, version);
-								openCache.put(requestUrl, cloneRes);
+					if (replaceUrl) {
+						response = await fetch(replaceUrl);
+						if (response && response.status == 200) {
+							if (checkUrl(requestUrl)) {
+								if (version == htmlVersion) {
+									var cloneRes = response.clone();
+									var openCache = await caches.open(openName);
+									console.warn("serviceWorker sw put", requestUrl, version);
+									openCache.put(requestUrl, cloneRes);
+								} else {
+									console.warn("serviceWorker sw version diff", requestUrl, htmlVersion, version);
+								}
 							} else {
-								console.warn("serviceWorker sw version diff", requestUrl, htmlVersion, version);
+								console.warn("serviceWorker sw 不存在清單 ", requestUrl, htmlVersion, version);
 							}
 						} else {
-							console.warn("serviceWorker sw 不存在清單 ", requestUrl, htmlVersion, version);
+							console.warn("serviceWorker ??? ", requestUrl, htmlVersion, version);
 						}
 					} else {
-						console.warn("serviceWorker ??? ", requestUrl, htmlVersion, version);
+						response = await fetch(requestUrl);
 					}
 				}
 			}
-			// const keyNames = await openCache.keys();
-			// console.warn("serviceWorker sw check aaa", keyNames);
-			return response;
-			var isRange = request.headers.get('range') && isSafari && !isMobile;
-			if (!isRange) return response;
-			else {
-				console.warn("serviceWorker sw range handle", requestUrl, version);
-				const arrayBuffer = await response.arrayBuffer();
-				const bytes = /^bytes\=(\d+)\-(\d+)?$/g.exec(
-					request.headers.get('range')
-				);
-				if (bytes) {
-					const start = Number(bytes[1]);
-					const end = Number(bytes[2]) || arrayBuffer.byteLength - 1;
-					return new Response(arrayBuffer.slice(start, end + 1), {
-						status: 206,
-						statusText: 'Partial Content',
-						headers: [
-							['Content-Range', `bytes ${start}-${end}/${arrayBuffer.byteLength}`]
-						]
-					});
-				} else {
-					return new Response(null, {
-						status: 416,
-						statusText: 'Range Not Satisfiable',
-						headers: [['Content-Range', `*/${arrayBuffer.byteLength}`]]
-					});
-				}
-			}
 		} catch (e) {
-			console.error("serviceWorker sw fetch fail", requestUrl, e.toString(), version);
+			console.error("serviceWorker sw fetch fail", requestUrl, e.toString(), version);			
 		}
+		return response;
 	}());
 });
