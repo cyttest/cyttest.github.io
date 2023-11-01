@@ -29,20 +29,20 @@ startCheck();
 
 var cacheList = [
 	"index.html",
-	// "libs/assetsmanager-d8261130f8.min.js",
-	// "libs/BGGameLib-e6253c61ef.min.js",
-	// "libs/dragonBones-d3e55aba9d.min.js",
-	// "libs/egret-2930803256.web.min.js",
-	// "libs/egret-a3ba4fff55.min.js",
-	// "libs/eui-55be2cff38.min.js",
-	// "libs/ExternalLib-4683577df1.min.js",
-	// "libs/game-92641ed6bb.min.js",
-	// "libs/h5module-18c6000611.js",
-	// "libs/index-9d8270ebed.js",
-	// "libs/main-ca9c03687d.js",
-	// "libs/promise-1db72e0812.min.js",
-	// "libs/soundjs-be02be4ef1.min.js",
-	// "libs/tween-20f8a48b47.min.js",
+	"libs/assetsmanager-d8261130f8.min.js",
+	"libs/BGGameLib-e6253c61ef.min.js",
+	"libs/dragonBones-d3e55aba9d.min.js",
+	"libs/egret-2930803256.web.min.js",
+	"libs/egret-a3ba4fff55.min.js",
+	"libs/eui-55be2cff38.min.js",
+	"libs/ExternalLib-4683577df1.min.js",
+	"libs/game-92641ed6bb.min.js",
+	"libs/h5module-18c6000611.js",
+	"libs/index-9d8270ebed.js",
+	"libs/main-ca9c03687d.js",
+	"libs/promise-1db72e0812.min.js",
+	"libs/soundjs-be02be4ef1.min.js",
+	"libs/tween-20f8a48b47.min.js",
 	"resource/assets/common/common_window-47a9508c59.bgjson",
 	"resource/assets/common/common_window-a3448e9651.bgpng",
 	"resource/assets/common/fnt/roadFntSheet_en_US_M-8d777f7e29.bgfnt",
@@ -695,6 +695,7 @@ self.addEventListener('fetch', function (event) {
 				}
 			} else {
 				response = await caches.match(requestUrl);
+				console.warn("serviceWorker sw match", requestUrl,response, version);
 				if (!response) {
 					if (replaceUrl) {
 						response = await fetch(replaceUrl);
