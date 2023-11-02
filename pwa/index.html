@@ -360,45 +360,59 @@
 				var start_url = self.location.origin + self.location.pathname + "?" + arrParam.join("&");
 				let scope = self.location.pathname;
 				let idx = scope.lastIndexOf("/")
-				scope = window.location.origin + scope.substring(0, idx );
+				scope = window.location.origin + scope.substring(0, idx);
 				var myDynamicManifest = {
-					name: "BG真人娱乐",
-					short_name: "BG Video(pwa)",
-					start_url: start_url,
-					background_color: "#fff",
-					display: "fullscreen",
-					theme_color: "#2a2929",
-					icons: [
+					"name": "BG真人娱乐",
+					"short_name": "BG Video(pwa)",
+					"start_url": start_url,
+					"background_color": "#fff",
+					"display": "fullscreen",
+					"theme_color": "#2a2929",
+					"icons": [
 						{
-							src: scope + "/pwa_dir/16x16.png",
-							sizes: "16x16",
-							type: "image/png"
+							"src": scope + "/pwa_dir/16x16.png",
+							"sizes": "16x16",
+							"type": "image/png"
 						},
 						{
-							src: scope + "/pwa_dir/64x64.png",
-							sizes: "64x64",
-							type: "image/png"
+							"src": scope + "/pwa_dir/64x64.png",
+							"sizes": "64x64",
+							"type": "image/png"
 						},
 						{
-							src: scope + "/pwa_dir/128x128.png",
-							sizes: "128x128",
-							type: "image/png"
+							"src": scope + "/pwa_dir/128x128.png",
+							"sizes": "128x128",
+							"type": "image/png"
 						},
 						{
-							src: scope + "/pwa_dir/144x144.png",
-							sizes: "144x144",
-							type: "image/png"
+							"src": scope + "/pwa_dir/144x144.png",
+							"sizes": "144x144",
+							"type": "image/png"
 						},
 						{
-							src: scope + "/pwa_dir/256x256.png",
-							sizes: "256x256",
-							type: "image/png"
+							"src": scope + "/pwa_dir/256x256.png",
+							"sizes": "256x256",
+							"type": "image/png"
 						},
 						{
-							src: scope + "/pwa_dir/512x512.png",
-							sizes: "512x512",
+							"src": scope + "/pwa_dir/512x512.png",
+							"sizes": "512x512",
 							"purpose": "maskable",
-							type: "image/png"
+							"type": "image/png"
+						}
+					],
+					"screenshots": [
+						{
+							"src":  scope + "/pwa_dir/512x512.png",
+							"type": "image/png",
+							"sizes": "512x512",
+							"form_factor": "narrow"
+						},
+						{
+							"src": scope + "/pwa_dir/512x512.png",
+							"type": "image/jpg",
+							"sizes": "512x512",
+							"form_factor": "wide"
 						}
 					]
 				}
