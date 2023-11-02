@@ -18,9 +18,11 @@
 	<!-- QQ强制全屏 -->
 	<meta name="x5-fullscreen" content="true" />
 	<meta name="x5-page-mode" content="app" />
-	<link rel="manifest" href="pwa_dir/manifest.json">
+	<link rel="manifest" id="my-manifest-placeholder">
+	<!-- <link rel="manifest" href="pwa_dir/manifest.json"> -->
 	<style>
 		@charset "UTF-8";
+
 		/* Welcome to Compass.
 /* Welcome to Compass. In this file you should write your main styles. (or centralize your imports) Import this file using the following HTML or equivalent: <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 		html,
@@ -247,13 +249,27 @@
 
 <body>
 	<script>
-		var ua = navigator.userAgent || navigator.vendor || window.opera;
-		var pwa = (navigator.standalone || window.matchMedia("(display-mode: fullscreen)").matches);
+		console.warn("pwa html parse", location.search);
+		var pwa = location.search.indexOf("pwaMode=true") != -1
+		var main;
+		var content;
+		main = document.createElement("div");
+		main.id = "mainPWA";
+		content = document.createElement("div");
+		content.id = "contentPWA";
+		main.appendChild(content);
+		document.body.appendChild(main);
+		console.warn("pwa html pwa===", pwa);
 		if (pwa) {
+			var loader = document.createElement("div");
+			content.className = "pwa";
+			loader.id = "loader";
+			content.appendChild(loader);
 			cacheHandle();
 			function cacheHandle() {
 				var bReloading;
 				var reload = function (force = false) {
+					console.warn('reload bReloading', bReloading, performance.now());
 					if (!bReloading) {
 						var ask;
 						bUrlLogout = true;
@@ -266,31 +282,34 @@
 					let scope = self.location.pathname;
 					let idx = scope.lastIndexOf("/")
 					scope = scope.substring(0, idx + 1);
-					console.warn('serviceWorker start', scope, performance.now());
-					if (navigator.serviceWorker.controller) {
-						console.warn('serviceWorker controller postMessage CHECK', performance.now());
-						navigator.serviceWorker.controller.postMessage({ type: "CHECK", });
-					}
-					navigator.serviceWorker.addEventListener('message', (e) => {
-						const data = e.data;
-						if (data && data.type == "reload")
-							reload();
-					});
+					console.warn('serviceWorker start', scope, navigator.serviceWorker.controller, performance.now());
 					navigator.serviceWorker.register('index_serviceworker.js', { scope: scope }).then(function (reg) {
 						console.warn("ServiceWorker registration success ", performance.now());
+						navigator.serviceWorker.addEventListener('message', (e) => {
+							const data = e.data;
+							if (data && data.type == "reload")
+								reload();
+						});
 						reg.update();
 						var curState;
 						if (reg.installing) {
-							console.warn('serviceWorker installing', performance.now());
 							curState = reg.installing;
+							console.warn('serviceWorker installing', curState, performance.now());
 						} else if (reg.waiting) {
-							console.warn('serviceWorker waiting', performance.now());
 							curState = reg.waiting;
+							console.warn('serviceWorker waiting', curState, performance.now());
 						} else if (reg.active) {
-							console.warn('serviceWorker active', performance.now());
 							curState = reg.active;
+							console.warn('serviceWorker active', reg, curState, performance.now());
 							reg.onupdatefound = function () {
 								console.warn("serviceWorker onupdatefound", performance.now());
+								reload();
+							}
+							console.warn('serviceWorker controller', navigator.serviceWorker.controller, performance.now());
+							if (navigator.serviceWorker.controller) {
+								console.warn('serviceWorker controller postMessage CHECK', performance.now());
+								navigator.serviceWorker.controller.postMessage({ type: "CHECK", });
+							} else {
 								reload();
 							}
 						}
@@ -312,34 +331,76 @@
 				}
 			}
 		} else {
-			var main;
-			var content;
-			main = document.createElement("div");
-			main.id = "mainPWA";
-			content = document.createElement("div");
-			content.id = "contentPWA";
-			main.appendChild(content);
-			document.body.appendChild(main);
-			if (pwa) {
-				var loader = document.createElement("div");
-				content.className = "pwa";
-				loader.id = "loader";
-				content.appendChild(loader);
+			content.className = "noPwa";
+			var h1 = document.createElement("h1");
+			var infoImage = document.createElement("img");
+			infoImage.id = "infoImage";
+			var ua = navigator.userAgent || navigator.vendor || window.opera;
+			if (ua.match(/Android/i)) {
+				h1.innerText = "請添加到主畫面(android)"
+				infoImage.src = "pwa_dir/pwa_android.png";
 			} else {
-				content.className = "noPwa";
-				var h1 = document.createElement("h1");
-				var infoImage = document.createElement("img");
-				infoImage.id = "infoImage";
-				if (ua.match(/Android/i)) {
-					h1.innerText = "請添加到主畫面(android)"
-					infoImage.src = "pwa_dir/pwa_android.png";
-				} else {
-					h1.innerText = "請添加到主畫面(IOS)"
-					infoImage.src = "pwa_dir/pwa_ios.jpg";
-				}
-				content.appendChild(h1);
-				content.appendChild(infoImage);
+				h1.innerText = "請添加到主畫面(IOS)"
+				infoImage.src = "pwa_dir/pwa_ios.jpg";
 			}
+			content.appendChild(h1);
+			content.appendChild(infoImage);
+
+			let scope = self.location.pathname;
+			let idx = scope.lastIndexOf("/")
+			scope = window.location.origin + scope.substring(0, idx + 1);
+			var start_url = window.location.href;
+			if (start_url.indexOf("?") == -1) start_url += "?";
+			start_url += "pwaMode=true";
+			var myDynamicManifest = {
+				name: "BG真人娱乐",
+				short_name: "BG Video(pwa)",
+				start_ur: start_url,
+				background_color: "#fff",
+				display: "fullscreen",
+				theme_color: "#2a2929",
+				icons: [
+					{
+						src: scope + "/pwa_dir/16x16.png",
+						sizes: "16x16",
+						type: "image/png"
+					},
+					{
+						src: scope + "/pwa_dir/64x64.png",
+						sizes: "64x64",
+						type: "image/png"
+					},
+					{
+						src: scope + "/pwa_dir/128x128.png",
+						sizes: "128x128",
+						type: "image/png"
+					},
+					{
+						src: scope + "/pwa_dir/144x144.png",
+						sizes: "144x144",
+						type: "image/png"
+					},
+					{
+						src: scope + "/pwa_dir/256x256.png",
+						sizes: "256x256",
+						type: "image/png"
+					},
+					{
+						src: scope + "/pwa_dir/512x512.png",
+						sizes: "512x512",
+						"purpose": "maskable",
+						type: "image/png"
+					}
+				]
+			}
+
+			const stringManifest = JSON.stringify(myDynamicManifest);
+			const blob = new Blob([stringManifest], { type: 'application/json' });
+			const manifestURL = URL.createObjectURL(blob);
+			document.querySelector('#my-manifest-placeholder').setAttribute('href', manifestURL);
+			var link = document.createElement('Link');
+			link.rel = "manifest";
+			link.setAttribute('href', 'data:application/json;charset=8' + stringManifest)
 		}
 
 

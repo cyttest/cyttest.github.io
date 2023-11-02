@@ -1,4 +1,4 @@
-// 缓存
+// 缓存333
 var version = "4.0.8.12";
 var htmlVersion;
 var self = this;
@@ -586,6 +586,71 @@ async function startCheck() {
 	}
 }
 
+async function putInCache(requestUrl, response) {
+	if (version == htmlVersion) {
+		if (checkUrl(requestUrl)) {
+			var cloneRes = response.clone();
+			var openCache = await caches.open(openName);
+			openCache.put(requestUrl, cloneRes);
+			console.warn("serviceWorker sw putInCache success", requestUrl, version);
+		} else {
+			console.warn("serviceWorker sw putInCache not list ", requestUrl, htmlVersion, version);
+		}
+	} else {
+		console.warn("serviceWorker sw putInCache version diff", requestUrl, htmlVersion, version);
+	}
+}
+
+async function cacheHtml() {
+	if (version == htmlVersion && curCdn) {
+		var requestUrl = gameHtml;
+		var uri = new URL(requestUrl)
+		var replaceUrl = requestUrl.replace(uri.origin, curCdn);
+		replaceUrl = replaceUrl.replace(domainPath, gamePath);
+		try {
+			response = await fetch(replaceUrl);
+			if (response && response.status == 200) {
+				putInCache(requestUrl, response);
+				return response;
+			}
+		} catch (e) { }
+	}
+	return null;
+}
+
+async function fetchFile(uri) {
+	var response;
+	try {
+		var requestUrl = uri.origin + uri.pathname;
+		if (requestUrl == gameHtml) {
+			//html 每次都抓取新的,抓取不到才使用緩存的
+			response = await cacheHtml();
+			console.warn("serviceWorker sw fetch html", response, version);
+			if (response) {
+				return response;
+			}
+		}
+		response = await caches.match(requestUrl);
+		if (!response) {
+			if (curCdn) {
+				//替換url host
+				var replaceUrl = requestUrl.replace(uri.origin, curCdn);
+				replaceUrl = replaceUrl.replace(domainPath, gamePath);
+				response = await fetch(replaceUrl);
+				if (response && response.status == 200) {
+					putInCache(requestUrl, response)
+				}
+			} else {
+				response = await fetch(requestUrl);
+			}
+		}
+	} catch (e) {
+		console.error("serviceWorker sw fetch fail", requestUrl, e.toString(), version);
+	}
+	// console.warn("serviceWorker sw fetch end", response, version);
+	return response;
+}
+
 function callReload() {
 	// 向客户端发送消息
 	self.clients.matchAll().then(clients => {
@@ -605,6 +670,8 @@ function checkUrl(url) {
 	// console.warn("serviceWorker sw  checkUrl", url, bIn)
 	return bIn;
 }
+
+
 
 self.addEventListener('install', function (event) {
 	console.warn("serviceWorker sw install!", version);
@@ -639,17 +706,19 @@ self.addEventListener('activate', function (event) {
 
 
 self.addEventListener('message', (event) => {
-	console.warn("serviceWorker sw message", event.data, version);
+	if (event.source.url.indexOf("pwaMode=true") == -1) return;
+	console.warn("serviceWorker sw message", event, version);
 	if (event.data) {
 		if (event.data.type === 'CHECK') {
-			console.warn("serviceWorker sw message CHECK", curCdn);
+			console.warn("serviceWorker sw message CHECK", curCdn, version);
 			if (curCdn)
 				callReload();
 			else
 				bWaitCdn = true;
 		} else if (event.data.type === 'VERSION') {
 			htmlVersion = event.data.value;
-			console.warn("serviceWorker sw message htmlVersion=", htmlVersion);
+			console.warn("serviceWorker sw message htmlVersion=", htmlVersion, version);
+			cacheHtml();
 		}
 	}
 });
@@ -659,70 +728,15 @@ self.addEventListener('fetch', function (event) {
 	var requestUrl = request.url;
 	// 只对 get 类型的请求进行拦截处理
 	if (request.method !== 'GET') return false;
-	var uri = new URL(requestUrl)
-	if (uri.pathname.indexOf(domainPath) == -1) {
-		// console.warn("serviceWorker sw 排除非當前目錄", requestUrl, self.location.origin, version);
-		return false;
-	}
-	if (requestUrl.indexOf("/pwa_dir/") != -1) return false;
+	if (request.referrer.indexOf("pwaMode=true") == -1 && requestUrl.indexOf("pwaMode=true") == -1) return false;
+	// console.warn("serviceWorker sw fetch", request, version);	
 	//去掉網址參數
 	if (requestUrl.indexOf("?") != -1) requestUrl = requestUrl.split("?")[0];
-	//替換url host
-	var replaceUrl;
-	if (curCdn) {
-		replaceUrl = requestUrl.replace(uri.origin, curCdn);
-		replaceUrl = replaceUrl.replace(domainPath, gamePath);
-	}
-	console.warn("serviceWorker sw replace", requestUrl, replaceUrl, version);
-	event.respondWith(async function () {
-		var response;
-		try {
-			if (requestUrl == gameHtml && replaceUrl) {
-				//html 每次都抓取新的,抓取不到才使用緩存的
-				try {
-					response = await fetch(replaceUrl);
-					if (response && response.status == 200) {
-						if (version == htmlVersion) {
-							var cloneRes = response.clone();
-							var openCache = await caches.open(openName);
-							console.warn("serviceWorker sw html put", requestUrl, version);
-							openCache.put(requestUrl, cloneRes);
-						}
-					}
-				} catch (e) {
-					response = await caches.match(requestUrl);
-					console.warn("serviceWorker sw html match", requestUrl, version);
-				}
-			} else {
-				response = await caches.match(requestUrl);
-				console.warn("serviceWorker sw match", requestUrl,response, version);
-				if (!response) {
-					if (replaceUrl) {
-						response = await fetch(replaceUrl);
-						if (response && response.status == 200) {
-							if (checkUrl(requestUrl)) {
-								if (version == htmlVersion) {
-									var cloneRes = response.clone();
-									var openCache = await caches.open(openName);
-									console.warn("serviceWorker sw put", requestUrl, version);
-									openCache.put(requestUrl, cloneRes);
-								} else {
-									console.warn("serviceWorker sw version diff", requestUrl, htmlVersion, version);
-								}
-							} else {
-								console.warn("serviceWorker sw 不存在清單 ", requestUrl, htmlVersion, version);
-							}
-						} else {
-							console.warn("serviceWorker ??? ", requestUrl, htmlVersion, version);
-						}
-					} else {
-						response = await fetch(requestUrl);
-					}
-				}
-			}
-		} catch (e) {
-			console.error("serviceWorker sw fetch fail", requestUrl, e.toString(), version);
-		}
-		return response;
-	}());
+	var uri = new URL(requestUrl)
+	//排除排除非當前目錄
+	if (uri.pathname.indexOf(domainPath) == -1) return false;
+	//排除pwa使用資料夾
+	if (uri.pathname.indexOf("/pwa_dir/") != -1) return false;
+
+	event.respondWith(fetchFile(uri));
 });

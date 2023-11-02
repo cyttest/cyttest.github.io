@@ -3,6 +3,7 @@
     "name": "BG真人娱乐",
     "background_color": "#fff",
     "display": "fullscreen",
+    "start_URL":"http://127.0.0.1:5500/pwa/index.html",
     "theme_color": "#2a2929",
     "icons": [
         {
