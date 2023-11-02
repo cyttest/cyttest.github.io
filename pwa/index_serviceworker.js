@@ -37,9 +37,9 @@ var cacheList = [
 	"libs/eui-55be2cff38.min.js",
 	"libs/ExternalLib-4683577df1.min.js",
 	"libs/game-92641ed6bb.min.js",
-	"libs/h5module-18c6000611.js",
+	"libs/h5module-02ef2605f7.js",
 	"libs/index-9d8270ebed.js",
-	"libs/main-ca9c03687d.js",
+	"libs/main-a3d5d43a88.js",
 	"libs/promise-1db72e0812.min.js",
 	"libs/soundjs-be02be4ef1.min.js",
 	"libs/tween-20f8a48b47.min.js",
@@ -652,6 +652,7 @@ async function fetchFile(uri) {
 }
 
 function callReload() {
+	
 	// 向客户端发送消息
 	self.clients.matchAll().then(clients => {
 		clients.forEach(client => {
@@ -726,10 +727,10 @@ self.addEventListener('message', (event) => {
 self.addEventListener('fetch', function (event) {
 	var request = event.request;
 	var requestUrl = request.url;
+	// console.warn("serviceWorker sw fetch", request, version);	
 	// 只对 get 类型的请求进行拦截处理
 	if (request.method !== 'GET') return false;
 	if (request.referrer.indexOf("pwaMode=true") == -1 && requestUrl.indexOf("pwaMode=true") == -1) return false;
-	// console.warn("serviceWorker sw fetch", request, version);	
 	//去掉網址參數
 	if (requestUrl.indexOf("?") != -1) requestUrl = requestUrl.split("?")[0];
 	var uri = new URL(requestUrl)
