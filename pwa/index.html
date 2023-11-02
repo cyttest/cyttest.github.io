@@ -353,6 +353,7 @@
 			content.appendChild(infoImage);
 			if (navigator.serviceWorker) {
 				arrParam = [];
+				objParam.pwaMode = "true";
 				for (var key in objParam) {
 					arrParam.push(key + "=" + objParam[key]);
 				}
