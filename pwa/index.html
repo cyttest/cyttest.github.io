@@ -360,7 +360,7 @@
 				var start_url = self.location.origin + self.location.pathname + "?" + arrParam.join("&");
 				let scope = self.location.pathname;
 				let idx = scope.lastIndexOf("/")
-				scope = window.location.origin + scope.substring(0, idx + 1);
+				scope = window.location.origin + scope.substring(0, idx );
 				var myDynamicManifest = {
 					name: "BG真人娱乐",
 					short_name: "BG Video(pwa)",

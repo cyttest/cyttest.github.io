@@ -647,7 +647,9 @@ async function fetchFile(uri) {
 	} catch (e) {
 		console.error("serviceWorker sw fetch fail", requestUrl, e.toString(), version);
 	}
-	// console.warn("serviceWorker sw fetch end", response, version);
+	if(!response){
+		console.warn("serviceWorker sw fetch null", response, version);
+	}
 	return response;
 }
 
