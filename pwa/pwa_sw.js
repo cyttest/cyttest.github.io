@@ -6,16 +6,16 @@ var openName = "pwa";
 let idx = self.location.pathname.lastIndexOf("/");
 let domainPath = self.location.pathname.substring(0, idx + 1);
 var gameHtml = self.location.origin + domainPath + "index.html";
-// var gamePath = "/h5V01/m/";
-var gamePath = "/bin-release/m/";
+var gamePath = "/h5V01/m/";
+// var gamePath = "/bin-release/m/";
 var curCdn;
 var bWaitCdn = false;
 var cdnRes = [
 	// "https://cdnx-ali.quietryo.com",
 	// "https://cdnx-hw.mjjhfer.com",
 	// "https://cdnnonx-ali.vmahjong.com"
-	// "https://cdnx-beta.hswenfa.com"
-	"http://127.0.0.1:3031/"
+	"https://cdnx-beta.hswenfa.com"
+	// "http://127.0.0.1:3031/"
 ];
 var cacheList = [
   "index.html",
