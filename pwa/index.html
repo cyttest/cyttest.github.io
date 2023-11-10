@@ -249,7 +249,7 @@
 
 <body>
 	<script>
-		var version = "4.0.8.11";
+		var version = "4.0.8.12";
 		var pwa = location.search.indexOf("pwaMode=true") != -1 ||
 			navigator.standalone ||
 			window.matchMedia("(display-mode: standalone)").matches ||
@@ -291,7 +291,7 @@
 						console.warn('===================  window.location.reload =======================', performance.now());
 						window.location.reload();
 					}
-					setInterval(startReload, 5000);
+					// setInterval(startReload, 5000);
 					startReload();
 				}
 			}
@@ -329,7 +329,7 @@
 				} else if (reg.waiting) {
 					console.warn('serviceWorker waiting', performance.now());
 					curState = reg.waiting;
-					reload();
+					// reload();
 				} else if (reg.active) {
 					console.warn('serviceWorker active', performance.now());
 					curState = reg.active;
