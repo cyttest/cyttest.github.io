@@ -1,6 +1,6 @@
 // 缓存
 var self = this;
-var version = "4.0.8.10";
+var version = "4.0.8.11";
 var htmlVersion;
 var openName = "pwa";
 let idx = self.location.pathname.lastIndexOf("/");
