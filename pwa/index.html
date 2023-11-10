@@ -20,265 +20,82 @@
 	<meta name="x5-page-mode" content="app" />
 	<link rel="apple-touch-icon" sizes="144x144" href="pwa_dir/144x144.png">
 	<link rel="manifest" id="my-manifest-placeholder">
-	<style>
-		@charset "UTF-8";
-
-		/* Welcome to Compass.
-/* Welcome to Compass. In this file you should write your main styles. (or centralize your imports) Import this file using the following HTML or equivalent: <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
-		html,
-		body,
-		div,
-		span,
-		applet,
-		object,
-		iframe,
-		h1,
-		h2,
-		h3,
-		h4,
-		h5,
-		h6,
-		p,
-		blockquote,
-		pre,
-		a,
-		abbr,
-		acronym,
-		address,
-		big,
-		cite,
-		code,
-		del,
-		dfn,
-		em,
-		img,
-		ins,
-		kbd,
-		q,
-		s,
-		samp,
-		small,
-		strike,
-		strong,
-		sub,
-		sup,
-		tt,
-		var,
-		b,
-		u,
-		i,
-		center,
-		dl,
-		dt,
-		dd,
-		ol,
-		ul,
-		li,
-		fieldset,
-		form,
-		label,
-		legend,
-		table,
-		caption,
-		tbody,
-		tfoot,
-		thead,
-		tr,
-		th,
-		td,
-		article,
-		aside,
-		canvas,
-		details,
-		embed,
-		figure,
-		figcaption,
-		footer,
-		header,
-		hgroup,
-		menu,
-		nav,
-		output,
-		ruby,
-		section,
-		summary,
-		time,
-		mark,
-		audio,
-		video {
-			margin: 0;
-			padding: 0;
-			border: 0;
-			font: inherit;
-			font-size: 100%;
-			vertical-align: baseline;
-		}
-
-		html {
-			line-height: 1;
-		}
-
-		ol,
-		ul {
-			list-style: none;
-		}
-
-		table {
-			border-collapse: collapse;
-			border-spacing: 0;
-		}
-
-		caption,
-		th,
-		td {
-			text-align: left;
-			font-weight: normal;
-			vertical-align: middle;
-		}
-
-		q,
-		blockquote {
-			quotes: none;
-		}
-
-		q:before,
-		q:after,
-		blockquote:before,
-		blockquote:after {
-			content: "";
-			content: none;
-		}
-
-		a img {
-			border: none;
-		}
-
-		* {
-			box-sizing: border-box;
-			margin: 0;
-			padding: 0;
-		}
-
-		@-webkit-keyframes rotate {
-			from {
-				transform: rotate(0deg);
-			}
-
-			to {
-				transform: rotate(360deg);
-			}
-		}
-
-		@keyframes rotate {
-			from {
-				transform: rotate(0deg);
-			}
-
-			to {
-				transform: rotate(360deg);
-			}
-		}
-
-		html,
-		body {
-			margin: 0;
-			padding: 0;
-			text-align: left;
-			font-family: "微软雅黑", "微軟正黑體";
-			height: 100%;
-		}
-
-		#mainPWA {
-			width: 100%;
-			height: 100%;
-			overflow: auto;
-			position: fixed;
-			z-index: 1000;
-			box-sizing: border-box;
-			padding-bottom: 20px;
-		}
-
-		#contentPWA {
-			width: 90%;
-			/* position: absolute;  */
-			padding: 20px;
-			text-align: center;
-			max-width: 720px;
-			min-height: 100%;
-			box-sizing: border-box;
-			margin: 0px auto 0px auto;
-
-		}
-
-		#contentPWA.pwa {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
-
-		#contentPWA.noPwa {
-			background-color: #fff;
-		}
-
-		#contentPWA h1 {
-			font-size: 24px;
-			font-weight: 600;
-			margin-bottom: 15px;
-			color: #1F2F76;
-		}
-
-		#contentPWA #infoImage {
-			max-width: 100%;
-			height: auto;
-		}
-
-		#loader {
-			border-width: 0.4rem;
-			border-style: solid;
-			border-color: gainsboro gainsboro #f2a63b00 gainsboro;
-			border-radius: 50%;
-			display: block;
-			width: 5rem;
-			height: 5rem;
-			-webkit-animation: rotate 1.2s linear infinite;
-			animation: rotate 1.2s linear infinite;
-			position: absolute;
-		}
-	</style>
+	<link rel="stylesheet" href="pwa_dir/style-c60d5d6f64.css">
 </head>
 
 <body>
 	<script>
-		var version = "4.0.8.12";
+		var version = "4.0.8.10";
 		var pwa = location.search.indexOf("pwaMode=true") != -1 ||
 			navigator.standalone ||
 			window.matchMedia("(display-mode: standalone)").matches ||
 			window.matchMedia("(display-mode: fullscreen)").matches
 		console.warn("html_pwa  pwa", pwa, location.search);
-		var main = document.createElement("div");
-		var content = document.createElement("div");
-		main.id = "mainPWA";
-		content.id = "contentPWA";
-		main.appendChild(content);
-		document.body.appendChild(main);
 		if (pwa && navigator.serviceWorker) {
 			//pwa mode
 			var loader = document.createElement("div");
-			content.className = "pwa";
 			loader.id = "loader";
-			content.appendChild(loader);
+			document.body.appendChild(loader);
 			cacheHandle();
 		} else {
-			content.className = "noPwa";
-			var h1 = document.createElement("h1");
-			var infoImage = document.createElement("img");
-			infoImage.id = "infoImage";
-			var ua = navigator.userAgent || navigator.vendor || window.opera;
-			h1.innerText = "请使用Sarafi浏览器\n添加到主画面"
-			infoImage.src = "pwa_dir/pwa_ios.jpg";
-			content.appendChild(h1);
-			content.appendChild(infoImage);
-			addManifest();
+			//獲取locale參數
+			var url = window.location.href;
+			var wls = url.indexOf('?') != -1 ? "?" + url.split('?')[1] : "";
+			var args = parse(wls);
+			function parse(str) {
+				var ret = {};
+				if (!str) {
+					return ret;
+				}
+				var seg = str.replace(/^\?/, "").split('&');
+				for (var i = seg.length - 1; i >= 0; i--) {
+					if (!seg[i]) {
+						continue;
+					}
+					var s = seg[i].split('=');
+					ret[s[0]] = s[1];
+				}
+				return ret;
+			};
+			if (args.locale && args.locale.indexOf("-") != -1) {
+				var loc = args.locale.replace(/-/g, "_")
+				args.locale = loc;
+
+			}
+			// 取得locale json資料
+			var request = new XMLHttpRequest();
+			request.open('GET', 'pwa_dir/locale-1bf1748ea4.json', true);
+			request.onload = function () {
+				if (request.status >= 200 && request.status < 400) {
+					// Success!
+					var data = JSON.parse(request.responseText);
+					var content = document.createElement("div");
+					content.id = "contentPWA";
+					document.body.appendChild(content);
+					var divWord = document.createElement("div");
+					var divImage = document.createElement("div");
+					divImage.id = "divImg";
+					var infoImage = document.createElement("img");
+					infoImage.id = "infoImage";
+					divImage.appendChild(infoImage);
+					var ua = navigator.userAgent || navigator.vendor || window.opera;
+					divWord.id = "pwaWord";
+					var locale = args.locale ? args.locale : "zh_CN";
+					if(args.locale && args.locale=="ms_MY") locale = "id_ID"
+					if (data[locale]) {
+						divWord.innerHTML = data[locale]
+						infoImage.src = "pwa_dir/pwa_ios_" + locale + ".png";
+					} else {
+						divWord.innerHTML = data["en_US"]
+						infoImage.src = "pwa_dir/pwa_ios_en_US.png";
+					}
+					content.appendChild(divWord);
+					content.appendChild(divImage);
+					addManifest();
+				}
+			};
+			request.send();
+
 		}
 		function cacheHandle() {
 			var bReloading;

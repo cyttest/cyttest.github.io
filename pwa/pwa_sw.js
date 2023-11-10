@@ -1,12 +1,12 @@
 // 缓存
 var self = this;
-var version = "4.0.8.12";
+var version = "4.0.8.10";
 var htmlVersion;
 var openName = "pwa";
 let idx = self.location.pathname.lastIndexOf("/");
 let domainPath = self.location.pathname.substring(0, idx + 1);
 var gameHtml = self.location.origin + domainPath + "index.html";
-var gamePath = "/h5V01/m/";
+var gamePath = "/h5V01/m_pwa/";
 // var gamePath = "/bin-release/m/";
 var curCdn;
 var bWaitCdn = false;
@@ -597,10 +597,27 @@ function checkUrl(url) {
 async function putInCache(requestUrl, response) {
 	if (checkUrl(requestUrl)) {
 		if (version == htmlVersion) {
-			var cloneRes = response.clone();
-			var openCache = await caches.open(openName);
-			openCache.put(requestUrl, cloneRes);
-			console.warn("[sw_pwa] putInCache success", requestUrl, version);
+			try {
+				var cloneRes = response.clone();
+				var openCache = await caches.open(openName);
+				openCache.put(requestUrl, cloneRes);
+				console.warn("[sw_pwa] putInCache success", requestUrl, version);
+			} catch (e) {
+				const cacheNames = await caches.keys();
+				for (let i = 0; i < cacheNames.length; i++) {
+					const tempCache = await caches.open(cacheNames[i]);
+					console.error("serviceWorker_pwa sw cacheNames", cacheNames[i], tempCache.keys);
+				}
+				if ('storage' in navigator && 'estimate' in navigator.storage) {
+					navigator.storage.estimate().then((estimate) => {
+						console.error('容量上限:', estimate.quota);
+						console.error('已使用大小:', estimate.usage);
+						console.error('使用率:', (estimate.usage / estimate.quota) * 100 + '%');
+					});
+				} else {
+					console.error('抱歉，您的浏览器不支持获取存储信息的 API。');
+				}
+			}
 		} else {
 			console.warn("[sw_pwa] putInCache version diff", requestUrl, version);
 		}
@@ -626,10 +643,11 @@ async function cacheHtml() {
 }
 
 /** 抓取檔案 */
-async function fetchFile(uri) {
+async function fetchFile(uri, request) {
 	var response;
 	try {
 		var requestUrl = uri.origin + uri.pathname;
+		console.warn("serviceWorker_pwa sw fetchFile", requestUrl, request.mode, version);
 		var cahcetype = requestUrl == gameHtml ? "reload" : "no-cache";
 		if (requestUrl == gameHtml && curCdn) {
 			//html 每次都抓取新的,抓取不到才使用緩存的
@@ -642,6 +660,7 @@ async function fetchFile(uri) {
 				//替換url host
 				var replaceUrl = requestUrl.replace(uri.origin, curCdn);
 				replaceUrl = replaceUrl.replace(domainPath, gamePath);
+				console.warn("serviceWorker_pwa sw replaceUrl", replaceUrl, version);
 				response = await fetch(replaceUrl, { cache: cahcetype });
 				if (response && response.status == 200) {
 					putInCache(requestUrl, response)
@@ -738,7 +757,7 @@ self.addEventListener('message', (event) => {
 self.addEventListener('fetch', function (event) {
 	var request = event.request;
 	var requestUrl = request.url;
-	// console.warn("[sw_pwa] fetch", request, version);	
+	console.warn("[sw_pwa] fetch", requestUrl, request.referrer, request.mode, version);
 	// 只对 get 类型的请求进行拦截处理
 	if (request.method !== 'GET') return false;
 	if (request.referrer.indexOf("pwaMode=true") == -1 && requestUrl.indexOf("pwaMode=true") == -1) return false;
@@ -750,5 +769,5 @@ self.addEventListener('fetch', function (event) {
 	//排除pwa使用資料夾
 	if (uri.pathname.indexOf("/pwa_dir/") != -1) return false;
 
-	event.respondWith(fetchFile(uri));
+	event.respondWith(fetchFile(uri, request));
 });
