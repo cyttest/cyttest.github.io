@@ -1,11 +1,12 @@
 // 缓存
 var self = this;
-var version = "4.0.8.14";
+var hash = "aef0aecd31d50d4a4b2fa1e104eab14f";
+var version = "4.0.8.11";
 var htmlVersion;
 var openName = "pwa";
 let idx = self.location.pathname.lastIndexOf("/");
 let domainPath = self.location.pathname.substring(0, idx + 1);
-var gameHtml = self.location.origin + domainPath + "index.html";
+var pwaHtml = self.location.origin + domainPath + "index.html";
 var gamePath = "/h5V01/m/";
 // var gamePath = "/bin-release/m/";
 var curCdn;
@@ -27,9 +28,9 @@ var cacheList = [
   "libs/eui-55be2cff38.min.js",
   "libs/ExternalLib-4683577df1.min.js",
   "libs/game-92641ed6bb.min.js",
-  "libs/h5module-7b12eee25a.js",
-  "libs/index-c0cbfbee01.js",
-  "libs/main-e8b6174be5.js",
+  "libs/h5module-d41b12c69f.js",
+  "libs/index-04383eda08.js",
+  "libs/main-b4386febdf.js",
   "libs/promise-1db72e0812.min.js",
   "libs/soundjs-be02be4ef1.min.js",
   "libs/tween-20f8a48b47.min.js",
@@ -49,7 +50,7 @@ var cacheList = [
   "resource/assets/common/goodRoad/goodRoad_sheet_zh_CN-9b40a71c74.bgpng",
   "resource/assets/common/goodRoad/goodRoad_sheet_zh_TW-cff8f009cc.bgpng",
   "resource/assets/common/goodRoad/goodRoad_sheet_zh_TW-e863eb0acd.bgjson",
-  "resource/assets/common/json/locale-2b88c4d6ed.bgjson",
+  "resource/assets/common/json/locale-f45aa31d60.bgjson",
   "resource/assets/common/json/music-df0775b349.bgjson",
   "resource/assets/common/json/sound-4a055c001d.bgjson",
   "resource/assets/common/L/road_sheet_en_US-3d5a97af03.bgpng",
@@ -450,8 +451,8 @@ var cacheList = [
   "resource/custom/ym06/poker-back_big-6d32590747.png",
   "resource/custom/ym06/poker-back-05396294fb.png",
   "resource/js/bgv-d6d7f87407.min.js",
-  "resource/js/res_L-905eb57932.bgjson",
-  "resource/js/thm-ac6bce8ed0.js",
+  "resource/js/res_L-551dd41614.bgjson",
+  "resource/js/thm-756ad2506a.js",
   "resource/sound/bac/bac_en_US-18d50fad5e.ogg",
   "resource/sound/bac/bac_en_US-b7b99c64bb.mp3",
   "resource/sound/bac/bac_zh_CN-a286ce57eb.ogg",
@@ -511,12 +512,6 @@ var cacheList = [
   "resource/sound/win3/win3_zh_HK-f9176f0691.ogg",
   "resource/web/close_btn-8022aa0d73.png",
   "resource/web/fullScreen_close-25f7d5443f.png",
-  "resource/web/icon/128x128-41e686422a.png",
-  "resource/web/icon/144x144-c00c0aac11.png",
-  "resource/web/icon/16x16-31b6c5d5d4.png",
-  "resource/web/icon/256x256-2f78c923dd.png",
-  "resource/web/icon/512x512-16efcfe14a.png",
-  "resource/web/icon/64x64-31eacb8503.png",
   "resource/web/loading_ba_glow-1-6a42d2be34.png",
   "resource/web/loading_ba_glow-b1ce919b04.png",
   "resource/web/loading-a5abf61efd.gif",
@@ -575,7 +570,7 @@ async function startCheck() {
 	try {
 		await checkCdn();
 		console.warn("[sw_pwa] checkCdn end", bWaitCdn, version);
-		if (bWaitCdn) callReload();
+		if (bWaitCdn) callClients("reload");
 	} catch (e) {
 		console.error("serviceWorker_pwa sw checkCdn fail", e.toString(), version);
 		setTimeout(startCheck, 3000);
@@ -611,12 +606,10 @@ async function putInCache(requestUrl, response) {
 
 /** 抓取新的html並緩存 */
 async function cacheHtml() {
-	var requestUrl = gameHtml;
+	var requestUrl = pwaHtml;
 	var uri = new URL(requestUrl)
-	var replaceUrl = requestUrl.replace(uri.origin, curCdn);
-	replaceUrl = replaceUrl.replace(domainPath, gamePath);
 	try {
-		response = await fetch(replaceUrl, { cache: "reload" });
+		response = await fetch(requestUrl, { cache: "reload" });
 		if (response && response.status == 200) {
 			putInCache(requestUrl, response);
 			return response;
@@ -630,15 +623,15 @@ async function fetchFile(uri) {
 	var response;
 	try {
 		var requestUrl = uri.origin + uri.pathname;
-		var cahcetype = requestUrl == gameHtml ? "reload" : "no-cache";
-		if (requestUrl == gameHtml && curCdn) {
+		var cahcetype = requestUrl == pwaHtml ? "reload" : "no-cache";
+		if (requestUrl == pwaHtml) {
 			//html 每次都抓取新的,抓取不到才使用緩存的
 			response = await cacheHtml();
 			if (response) return response;
 		}
 		response = await caches.match(requestUrl);
 		if (!response) {
-			if (curCdn) {
+			if (curCdn && requestUrl != pwaHtml) {
 				//替換url host
 				var replaceUrl = requestUrl.replace(uri.origin, curCdn);
 				replaceUrl = replaceUrl.replace(domainPath, gamePath);
@@ -659,12 +652,41 @@ async function fetchFile(uri) {
 	return response;
 }
 
+
+var bOldIOS = undefined;
+/** 檢查是否更新 */
+async function checkSW() {
+	try {
+		if (bOldIOS == undefined) {
+			bOldIOS = false;
+			if (/iPhone/.test(navigator.userAgent)) {
+				var ver = navigator.userAgent.match(/OS (\d+)/);
+				if (ver[1] && +ver[1] < 15)
+					bOldIOS = true;
+			}
+		}
+		if (bOldIOS) {
+			let response = await fetch(self.location.href, { cache: "reload" });
+			if (response && response.status == 200) {
+				const text = await response.text();
+				var hasgRegex = /var hash = "(.*?)";/;
+				var match = text.match(hasgRegex);
+				if (match && match[1] != hash)
+					callClients("unregister");
+			}
+		} else
+			self.registration.update();
+	} catch (e) {
+		console.error("[sw_pwa]  checkSW fail", e.toString(), version);
+	}
+}
+
 /** 呼叫頁面reload */
-function callReload() {	// 
-	console.warn("[sw_pwa] callReload", version);
+function callClients(sType) {	// 
 	self.clients.matchAll().then(clients => {
+		console.warn("[sw_pwa] callClients clients", clients, version);
 		clients.forEach(client => {
-			client.postMessage({ type: "reload" });
+			client.postMessage({ type: sType });
 		});
 	});
 }
@@ -672,19 +694,14 @@ function callReload() {	//
 
 self.addEventListener('install', function (event) {
 	console.warn("[sw_pwa] install!", version);
-	bWaitCdn = true;
 	const checkWating = () => {
-		console.warn("[sw_pwa] install! state", self.serviceWorker.state, version);
 		if (self.serviceWorker.state == "installing" || self.serviceWorker.state == "installed") {
-			if (curCdn) {
-				self.skipWaiting();
-				self.clients.matchAll().then(clients => { console.warn("[sw_pwa] install! clients", clients, version); });
-			}
+			console.warn("[sw_pwa] install check state", self.serviceWorker.state, curCdn, version);
+			if (curCdn) self.skipWaiting();
 			setTimeout(checkWating, 1000);
 		}
 	}
 	checkWating();
-
 });
 
 // 缓存更新
@@ -715,22 +732,13 @@ self.addEventListener('activate', function (event) {
 
 
 self.addEventListener('message', (event) => {
-	// console.warn("[sw_pwa] message", event.data, event.source.url, version);
-	if (event.source.url.indexOf("pwaMode=true") == -1) return;
 	if (event.data) {
-		if (event.data.type === 'CHECK') {
-			console.warn("[sw_pwa] message CHECK", curCdn, version);
-			if (curCdn) callReload();
-			else bWaitCdn = true;
-		} else if (event.data.type === 'VERSION') {
+		console.warn("[sw_pwa] message", event.data, version);
+		if (event.data.type === 'VERSION') {
 			htmlVersion = event.data.value;
-			console.warn("[sw_pwa] message htmlVersion", htmlVersion, version);
-			if (version == htmlVersion && curCdn)
-				cacheHtml();
+			if (version == htmlVersion) cacheHtml();
 		} else if (event.data.type === 'UPDATE') {
-			let swFile = self.location.origin + domainPath + "pwa_sw.js";
-			console.warn("[sw_pwa] message UPDATE", swFile, version);
-			fetch(swFile, { cache: "reload" })
+			checkSW();
 		}
 	}
 });
@@ -741,14 +749,13 @@ self.addEventListener('fetch', function (event) {
 	// console.warn("[sw_pwa] fetch", request, version);	
 	// 只对 get 类型的请求进行拦截处理
 	if (request.method !== 'GET') return false;
-	if (request.referrer.indexOf("pwaMode=true") == -1 && requestUrl.indexOf("pwaMode=true") == -1) return false;
 	//去掉網址參數
-	if (requestUrl.indexOf("?") != -1) requestUrl = requestUrl.split("?")[0];
+	if (requestUrl.match(/\?/)) requestUrl = requestUrl.split("?")[0];
+	//排除pwa使用資料夾
+	if (requestUrl.match("pwa_sw.js|pwa_dir|pwa.html")) return false;
 	var uri = new URL(requestUrl)
 	//排除排除非當前目錄
-	if (uri.pathname.indexOf(domainPath) == -1) return false;
-	//排除pwa使用資料夾
-	if (uri.pathname.indexOf("/pwa_dir/") != -1) return false;
+	if (!uri.pathname.match(domainPath)) return false;
 
 	event.respondWith(fetchFile(uri));
 });
