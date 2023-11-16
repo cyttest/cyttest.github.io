@@ -1,7 +1,7 @@
 // 缓存
 var self = this;
-var hash = "aef0aecd31d50d4a4b2fa1e104eab14f";
-var version = "4.0.8.11";
+var hash = "b5b85a4ed9921667ded417951e60b3c1";
+var version = "4.0.8.12";
 var htmlVersion;
 var openName = "pwa";
 let idx = self.location.pathname.lastIndexOf("/");
@@ -647,7 +647,10 @@ async function fetchFile(uri) {
 		console.error("serviceWorker_pwa sw fetch fail", requestUrl, e.toString(), version);
 	}
 	if (!response) {
-		console.warn("[sw_pwa] fetch null", response, version);
+		response = new Response("Network error happened", {
+			status: 404,
+			headers: { "Content-Type": "text/plain" },
+		});
 	}
 	return response;
 }
@@ -733,9 +736,9 @@ self.addEventListener('activate', function (event) {
 
 self.addEventListener('message', (event) => {
 	if (event.data) {
-		console.warn("[sw_pwa] message", event.data, version);
 		if (event.data.type === 'VERSION') {
 			htmlVersion = event.data.value;
+			console.warn("[sw_pwa] message VERSION", event.data, version);
 			if (version == htmlVersion) cacheHtml();
 		} else if (event.data.type === 'UPDATE') {
 			checkSW();
