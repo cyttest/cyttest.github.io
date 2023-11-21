@@ -1,14 +1,13 @@
 // 缓存
 var self = this;
-var hash = "b5b85a4ed9921667ded417951e60b3c1";
-var version = "4.0.8.12";
+var hash = "24fd5ae06b59e8772e8893ab1da017bb";
+var version = "4.0.8.15";
 var htmlVersion;
 var openName = "pwa";
 let idx = self.location.pathname.lastIndexOf("/");
 let domainPath = self.location.pathname.substring(0, idx + 1);
 var pwaHtml = self.location.origin + domainPath + "index.html";
 var gamePath = "/h5V01/m/";
-// var gamePath = "/bin-release/m/";
 var curCdn;
 var bWaitCdn = false;
 var cdnRes = [
@@ -28,9 +27,9 @@ var cacheList = [
   "libs/eui-55be2cff38.min.js",
   "libs/ExternalLib-4683577df1.min.js",
   "libs/game-92641ed6bb.min.js",
-  "libs/h5module-d41b12c69f.js",
+  "libs/h5module-8915a9fa9a.js",
   "libs/index-04383eda08.js",
-  "libs/main-b4386febdf.js",
+  "libs/main-326b0500af.js",
   "libs/promise-1db72e0812.min.js",
   "libs/soundjs-be02be4ef1.min.js",
   "libs/tween-20f8a48b47.min.js",
@@ -450,9 +449,9 @@ var cacheList = [
   "resource/custom/ym06/logo_ym06-5e716f1b36.png",
   "resource/custom/ym06/poker-back_big-6d32590747.png",
   "resource/custom/ym06/poker-back-05396294fb.png",
-  "resource/js/bgv-d6d7f87407.min.js",
+  "resource/js/bgv-25976da8e3.min.js",
   "resource/js/res_L-551dd41614.bgjson",
-  "resource/js/thm-756ad2506a.js",
+  "resource/js/thm-532513b441.js",
   "resource/sound/bac/bac_en_US-18d50fad5e.ogg",
   "resource/sound/bac/bac_en_US-b7b99c64bb.mp3",
   "resource/sound/bac/bac_zh_CN-a286ce57eb.ogg",
@@ -609,7 +608,7 @@ async function cacheHtml() {
 	var requestUrl = pwaHtml;
 	var uri = new URL(requestUrl)
 	try {
-		response = await fetch(requestUrl, { cache: "reload" });
+		response = await fetch(requestUrl);
 		if (response && response.status == 200) {
 			putInCache(requestUrl, response);
 			return response;
@@ -623,7 +622,6 @@ async function fetchFile(uri) {
 	var response;
 	try {
 		var requestUrl = uri.origin + uri.pathname;
-		var cahcetype = requestUrl == pwaHtml ? "reload" : "no-cache";
 		if (requestUrl == pwaHtml) {
 			//html 每次都抓取新的,抓取不到才使用緩存的
 			response = await cacheHtml();
@@ -635,12 +633,12 @@ async function fetchFile(uri) {
 				//替換url host
 				var replaceUrl = requestUrl.replace(uri.origin, curCdn);
 				replaceUrl = replaceUrl.replace(domainPath, gamePath);
-				response = await fetch(replaceUrl, { cache: cahcetype });
+				response = await fetch(replaceUrl);
 				if (response && response.status == 200) {
 					putInCache(requestUrl, response)
 				}
 			} else {
-				response = await fetch(requestUrl, { cache: cahcetype });
+				response = await fetch(requestUrl);
 			}
 		}
 	} catch (e) {
@@ -656,29 +654,17 @@ async function fetchFile(uri) {
 }
 
 
-var bOldIOS = undefined;
 /** 檢查是否更新 */
 async function checkSW() {
 	try {
-		if (bOldIOS == undefined) {
-			bOldIOS = false;
-			if (/iPhone/.test(navigator.userAgent)) {
-				var ver = navigator.userAgent.match(/OS (\d+)/);
-				if (ver[1] && +ver[1] < 15)
-					bOldIOS = true;
-			}
+		let response = await fetch(self.location.href);
+		if (response && response.status == 200) {
+			const text = await response.text();
+			var hasgRegex = /var hash = "(.*?)";/;
+			var match = text.match(hasgRegex);
+			if (match && match[1] != hash)
+				callClients("unregister");
 		}
-		if (bOldIOS) {
-			let response = await fetch(self.location.href, { cache: "reload" });
-			if (response && response.status == 200) {
-				const text = await response.text();
-				var hasgRegex = /var hash = "(.*?)";/;
-				var match = text.match(hasgRegex);
-				if (match && match[1] != hash)
-					callClients("unregister");
-			}
-		} else
-			self.registration.update();
 	} catch (e) {
 		console.error("[sw_pwa]  checkSW fail", e.toString(), version);
 	}
