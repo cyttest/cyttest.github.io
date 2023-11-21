@@ -1,7 +1,7 @@
 // 缓存
 var self = this;
-var hash = "24fd5ae06b59e8772e8893ab1da017bb";
-var version = "4.0.8.15";
+var hash = "9ddf2619c1faf87349721eedf7dc8805";
+var version = "4.0.8.16";
 var htmlVersion;
 var openName = "pwa";
 let idx = self.location.pathname.lastIndexOf("/");
@@ -28,7 +28,7 @@ var cacheList = [
   "libs/ExternalLib-4683577df1.min.js",
   "libs/game-92641ed6bb.min.js",
   "libs/h5module-8915a9fa9a.js",
-  "libs/index-04383eda08.js",
+  "libs/index-31d91a8a44.js",
   "libs/main-326b0500af.js",
   "libs/promise-1db72e0812.min.js",
   "libs/soundjs-be02be4ef1.min.js",
