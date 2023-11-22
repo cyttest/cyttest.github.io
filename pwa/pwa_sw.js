@@ -1,22 +1,29 @@
 // 缓存
 var self = this;
-var hash = "9ddf2619c1faf87349721eedf7dc8805";
-var version = "4.0.8.16";
-var htmlVersion;
+var hash = "f7e3441a432a7d99c684e3b129c83373";
+var version = "4.0.8.15";
+var swName = "[sw_pwa]";
 var openName = "pwa";
+var isPwa = true;
+var htmlVersion;
+var replaceCdn;
 let idx = self.location.pathname.lastIndexOf("/");
 let domainPath = self.location.pathname.substring(0, idx + 1);
-var pwaHtml = self.location.origin + domainPath + "index.html";
+var indexHtml = self.location.origin + domainPath + "index.html";
+console.warn(swName + " init htmlVersion", htmlVersion, version);
+console.warn(swName + " init domainPath", domainPath, version);
 var gamePath = "/h5V01/m/";
-var curCdn;
-var bWaitCdn = false;
 var cdnRes = [
 	// "https://cdnx-ali.quietryo.com",
 	// "https://cdnx-hw.mjjhfer.com",
 	// "https://cdnnonx-ali.vmahjong.com"
 	"https://cdnx-beta.hswenfa.com"
-	// "http://127.0.0.1:3031/"
+
 ];
+//TEST
+// gamePath = "/bin-release/m/";
+// cdnRes = ["http://127.0.0.1:3031"];
+//TEST
 var cacheList = [
   "index.html",
   "libs/assetsmanager-d8261130f8.min.js",
@@ -28,7 +35,7 @@ var cacheList = [
   "libs/ExternalLib-4683577df1.min.js",
   "libs/game-92641ed6bb.min.js",
   "libs/h5module-8915a9fa9a.js",
-  "libs/index-31d91a8a44.js",
+  "libs/index-04383eda08.js",
   "libs/main-326b0500af.js",
   "libs/promise-1db72e0812.min.js",
   "libs/soundjs-be02be4ef1.min.js",
@@ -519,20 +526,11 @@ var cacheList = [
   "resource/web/style-6168458ad2.css",
   "resource/web/touchFull-df0d195621.gif"
 ];
-console.warn("[sw_pwa] init htmlVersion", htmlVersion, version);
-console.warn("[sw_pwa] init curCdn", curCdn, version);
-console.warn("[sw_pwa] init domainPath", domainPath, version);
-console.warn("[sw_pwa] init gamePath", gamePath, version);
-startCheck();
 
-//===============檢查線路代碼=========================
-async function wait(ms) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 /** 檢查可用線路 */
-async function checkCdn() {
-	console.warn("[sw_pwa] checkCdn!", version);
+const checkCdn = async () => {
+	console.warn(swName + " checkCdn!", version);
 	let failCount = 0;
 	let bSuccess = false;
 	const total = cdnRes.length;
@@ -542,12 +540,12 @@ async function checkCdn() {
 			const fileName = url + gamePath + "config.json?v=" + Math.floor(1e4 * Math.random());
 			try {
 				const response = await fetch(fileName);
-				if (response && response.status == 200 && !bSuccess) {
+				if (response && response.ok && !bSuccess) {
 					const data = await response.json();
 					if (data) {
 						// 設置url             
-						console.warn("[sw_pwa] set cdn", url, version);
-						curCdn = url;
+						console.warn(swName + " set cdn", url, version);
+						replaceCdn = url;
 						bSuccess = true;
 						resolve(url);
 						return;
@@ -555,7 +553,7 @@ async function checkCdn() {
 				}
 			} catch (error) {
 				// 忽略錯誤文件
-				console.warn("[sw_pwa] get cdn fail", url, error.toString(), version);
+				console.warn(swName + " get cdn fail", url, error.toString(), version);
 			}
 			if (++failCount == total) {
 				reject("all fail");
@@ -563,18 +561,17 @@ async function checkCdn() {
 		});
 	});
 }
-
 /** 檢查可用線路 */
-async function startCheck() {
+const startCheck = async () => {
 	try {
 		await checkCdn();
-		console.warn("[sw_pwa] checkCdn end", bWaitCdn, version);
-		if (bWaitCdn) callClients("reload");
+		console.warn(swName + " checkCdn end", version);
 	} catch (e) {
-		console.error("serviceWorker_pwa sw checkCdn fail", e.toString(), version);
+		console.error(swName + " checkCdn fail", e.toString(), version);
 		setTimeout(startCheck, 3000);
 	}
 }
+startCheck();
 
 //===============緩存檔案代碼=========================
 
@@ -594,22 +591,21 @@ async function putInCache(requestUrl, response) {
 			var cloneRes = response.clone();
 			var openCache = await caches.open(openName);
 			openCache.put(requestUrl, cloneRes);
-			console.warn("[sw_pwa] putInCache success", requestUrl, version);
+			console.warn(swName + " putInCache success", requestUrl, version);
 		} else {
-			console.warn("[sw_pwa] putInCache version diff", requestUrl, version);
+			console.warn(swName + " putInCache version diff", requestUrl, version);
 		}
 	} else {
-		console.warn("[sw_pwa] putInCache not list ", requestUrl, version);
+		console.warn(swName + " putInCache not list ", requestUrl, version);
 	}
 }
 
 /** 抓取新的html並緩存 */
 async function cacheHtml() {
-	var requestUrl = pwaHtml;
-	var uri = new URL(requestUrl)
 	try {
-		response = await fetch(requestUrl);
-		if (response && response.status == 200) {
+		var requestUrl = indexHtml;
+		response = await fetch(requestUrl, { cache: "reload" });
+		if (response && response.ok) {
 			putInCache(requestUrl, response);
 			return response;
 		}
@@ -617,32 +613,62 @@ async function cacheHtml() {
 	return null;
 }
 
+async function handleRangeFile(request, response) {
+	const arrayBuffer = await response.arrayBuffer();
+	const bytes = /^bytes\=(\d+)\-(\d+)?$/g.exec(request.headers.get('range'));
+	if (bytes) {
+		const start = Number(bytes[1]);
+		const end = Number(bytes[2]) || arrayBuffer.byteLength - 1;
+		return new Response(arrayBuffer.slice(start, end + 1), {
+			status: 206,
+			statusText: 'Partial Content',
+			headers: [
+				['Content-Range', `bytes ${start}-${end}/${arrayBuffer.byteLength}`]
+			]
+		});
+	} else {
+		return new Response(null, {
+			status: 416,
+			statusText: 'Range Not Satisfiable',
+			headers: [['Content-Range', `*/${arrayBuffer.byteLength}`]]
+		});
+	}
+}
+
+
 /** 抓取檔案 */
-async function fetchFile(uri) {
+async function fetchFile(uri, request) {
 	var response;
 	try {
 		var requestUrl = uri.origin + uri.pathname;
-		if (requestUrl == pwaHtml) {
+		if (requestUrl == indexHtml) {
 			//html 每次都抓取新的,抓取不到才使用緩存的
 			response = await cacheHtml();
 			if (response) return response;
 		}
 		response = await caches.match(requestUrl);
-		if (!response) {
-			if (curCdn && requestUrl != pwaHtml) {
-				//替換url host
-				var replaceUrl = requestUrl.replace(uri.origin, curCdn);
-				replaceUrl = replaceUrl.replace(domainPath, gamePath);
-				response = await fetch(replaceUrl);
-				if (response && response.status == 200) {
-					putInCache(requestUrl, response)
-				}
-			} else {
-				response = await fetch(requestUrl);
+		if (response) {
+			if (request.headers.get('range')) {
+				console.warn(swName + " fetch range handle", request, response, version);
+				response = await handleRangeFile(request, response)
 			}
+		} else {
+			var cacheType = requestUrl == indexHtml ? "reload" : "default";
+			var replaceUrl;
+			if (isPwa && replaceCdn && requestUrl != indexHtml) {
+				//替換url host
+				replaceUrl = requestUrl.replace(uri.origin, replaceCdn);
+				replaceUrl = replaceUrl.replace(domainPath, gamePath);
+			}
+			response = await fetch(replaceUrl ? replaceUrl : requestUrl, { cache: cacheType });
+			if (response && response.ok) {
+				if (!isPwa || replaceUrl)
+					putInCache(requestUrl, response);
+			}
+
 		}
 	} catch (e) {
-		console.error("serviceWorker_pwa sw fetch fail", requestUrl, e.toString(), version);
+		console.error(swName + " fetch fail", requestUrl, e.toString(), version);
 	}
 	if (!response) {
 		response = new Response("Network error happened", {
@@ -657,23 +683,23 @@ async function fetchFile(uri) {
 /** 檢查是否更新 */
 async function checkSW() {
 	try {
-		let response = await fetch(self.location.href);
-		if (response && response.status == 200) {
+		let response = await fetch(self.location.href, { cache: "reload" });
+		if (response && response.ok) {
 			const text = await response.text();
-			var hasgRegex = /var hash = "(.*?)";/;
-			var match = text.match(hasgRegex);
+			var hashRegex = /var hash = "(.*?)";/;
+			var match = text.match(hashRegex);
 			if (match && match[1] != hash)
 				callClients("unregister");
 		}
 	} catch (e) {
-		console.error("[sw_pwa]  checkSW fail", e.toString(), version);
+		console.error(swName + "  checkSW fail", e.toString(), version);
 	}
 }
 
 /** 呼叫頁面reload */
 function callClients(sType) {	// 
 	self.clients.matchAll().then(clients => {
-		console.warn("[sw_pwa] callClients clients", clients, version);
+		console.warn(swName + " callClients clients", clients, version);
 		clients.forEach(client => {
 			client.postMessage({ type: sType });
 		});
@@ -682,15 +708,8 @@ function callClients(sType) {	//
 
 
 self.addEventListener('install', function (event) {
-	console.warn("[sw_pwa] install!", version);
-	const checkWating = () => {
-		if (self.serviceWorker.state == "installing" || self.serviceWorker.state == "installed") {
-			console.warn("[sw_pwa] install check state", self.serviceWorker.state, curCdn, version);
-			if (curCdn) self.skipWaiting();
-			setTimeout(checkWating, 1000);
-		}
-	}
-	checkWating();
+	console.warn(swName + " install!", version);
+	self.skipWaiting();
 });
 
 // 缓存更新
@@ -702,19 +721,19 @@ self.addEventListener('activate', function (event) {
 			//比對檔名是否存在於清單之中 不存在就清除
 			var fileName = request.url;
 			if (checkUrl(fileName) == false) {
-				console.warn("[sw_pwa] deleteCurCache delete", fileName, version);
+				console.warn(swName + " deleteCurCache delete", fileName, version);
 				return openCache.delete(request);
 			}
 		}));
-		console.warn("[sw_pwa] deleteCurCache complete", version);
+		console.warn(swName + " deleteCurCache complete", version);
 	}
 	const doDeleteJob = async () => {
 		await Promise.all([deleteCurCache()])
 			.then(function () {
-				console.warn("[sw_pwa] activate complete", version);
+				console.warn(swName + " activate complete", version);
 			})
 	}
-	console.warn("[sw_pwa] activate", version);
+	console.warn(swName + " activate", version);
 	self.clients.claim();
 	event.waitUntil(doDeleteJob());
 });
@@ -724,7 +743,7 @@ self.addEventListener('message', (event) => {
 	if (event.data) {
 		if (event.data.type === 'VERSION') {
 			htmlVersion = event.data.value;
-			console.warn("[sw_pwa] message VERSION", event.data, version);
+			console.warn(swName + " message VERSION", event.data, version);
 			if (version == htmlVersion) cacheHtml();
 		} else if (event.data.type === 'UPDATE') {
 			checkSW();
@@ -735,16 +754,16 @@ self.addEventListener('message', (event) => {
 self.addEventListener('fetch', function (event) {
 	var request = event.request;
 	var requestUrl = request.url;
-	// console.warn("[sw_pwa] fetch", request, version);	
+	// console.warn(swName+" fetch", requestUrl, version);
 	// 只对 get 类型的请求进行拦截处理
 	if (request.method !== 'GET') return false;
 	//去掉網址參數
 	if (requestUrl.match(/\?/)) requestUrl = requestUrl.split("?")[0];
 	//排除pwa使用資料夾
-	if (requestUrl.match("pwa_sw.js|pwa_dir|pwa.html")) return false;
+	if (requestUrl.match(/pwa_sw.js|pwa_dir|pwa.html/)) return false;
 	var uri = new URL(requestUrl)
 	//排除排除非當前目錄
 	if (!uri.pathname.match(domainPath)) return false;
 
-	event.respondWith(fetchFile(uri));
+	event.respondWith(fetchFile(uri, request));
 });
