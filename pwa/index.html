@@ -41,7 +41,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.4";
+		htmlInfo.version = "4.0.8.5";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-551dd41614.bgjson";
@@ -410,7 +410,9 @@
 
 		function cacheHandle() {
 			var bReloading;
+			var bAsking;
 			var askConfirm = function () {
+				if (bAsking) return false;
 				if (htmlInfo.bViewInit) {
 					var strAsk;
 					switch (bgInfo.locale) {
@@ -422,10 +424,12 @@
 						default:
 							strAsk = "Found a new version, please update the game!"; break;
 					}
-					if (!confirm(strAsk))
-						return false
+					bAsking = true;
+					var b = confirm(strAsk);
+					bAsking = false;
+					if (!b) return false;
 				}
-				return true
+				return true;
 			}
 			var reload = function (force = false) {
 				console.warn('html call reload', performance.now());
@@ -437,6 +441,9 @@
 					bReloading = true;
 					console.warn('===================  window.location.reload =======================', performance.now());
 					window.location.reload();
+					setInterval(function () {
+						window.location.reload();
+					}, 5000);
 				}
 			}
 			if ('serviceWorker' in navigator) {
@@ -495,16 +502,17 @@
 						}
 					}
 					console.warn("serviceWorker update ", bOldIOS, !!navigator.serviceWorker.controller, performance.now());
-					if (swRegister) {
-						swRegister.update().catch(function (e) {
-							console.warn("serviceWorker update fail", e.toString(), performance.now());
-							unregisterSW();
-						});
-					}
+					// if (swRegister) {
+					// 	swRegister.update().catch(function (e) {
+					// 		console.warn("serviceWorker update fail", e.toString(), performance.now());
+					// 		unregisterSW();
+					// 	});
+					// }
 					if (navigator.serviceWorker.controller)
-						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: bOldIOS });
+						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: true });
 				}
 				const unregisterSW = function (force) {
+					bgInfo.bNeedReload = true;
 					if (!force && !askConfirm()) return;
 					if (bUnregister) return;
 					bUnregister = true;
@@ -522,7 +530,7 @@
 						if (data.type == "reload")
 							reload();
 						else if (data.type == "unregister")
-							unregisterSW();
+							reload();
 					}
 				});
 				navigator.serviceWorker.addEventListener("controllerchange", function () {
