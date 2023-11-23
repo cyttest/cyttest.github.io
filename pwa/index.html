@@ -41,7 +41,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.0";
+		htmlInfo.version = "4.0.8.2";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-551dd41614.bgjson";
@@ -410,25 +410,29 @@
 
 		function cacheHandle() {
 			var bReloading;
+			var askConfirm = function () {
+				if (htmlInfo.bViewInit) {
+					var strAsk;
+					switch (bgInfo.locale) {
+						case "zh_CN":
+						case undefined:
+							strAsk = "发现新版本，请更新后再进行游戏！"; break;
+						case "zh_TW":
+							strAsk = "發現新版本，請更新後再進行遊戲！"; break;
+						default:
+							strAsk = "Found a new version, please update the game!"; break;
+					}
+					if (!confirm(strAsk))
+						return false
+				}
+				return true
+			}
 			var reload = function (force = false) {
 				console.warn('html call reload', performance.now());
 				bgInfo.bNeedReload = true;
 				if (!bReloading) {
 					//遊戲已進入時跳出詢問框
-					if (htmlInfo.bViewInit && !force) {
-						var strAsk;
-						switch (bgInfo.locale) {
-							case "zh_CN":
-							case undefined:
-								strAsk = "发现新版本，请更新后再进行游戏！"; break;
-							case "zh_TW":
-								strAsk = "發現新版本，請更新後再進行遊戲！"; break;
-							default:
-								strAsk = "Found a new version, please update the game!"; break;
-						}
-						if (!confirm(strAsk))
-							return
-					}
+					if (!askConfirm()) return;
 					bUrlLogout = true;
 					bReloading = true;
 					console.warn('===================  window.location.reload =======================', performance.now());
@@ -441,17 +445,16 @@
 				let idx = scope.lastIndexOf("/");
 				let bUnregister = false;
 				let swRegister;
+				var bOldIOS = undefined;
 				scope = scope.substring(0, idx + 1);
 				console.warn('serviceWorker start', scope, navigator.serviceWorker.controller, performance.now());
-				navigator.serviceWorker.register(swFile, { scope: scope }).then((reg) => {
-					swRegister = reg;
+				navigator.serviceWorker.register(swFile, { scope: scope }).then(function (reg) {
 					console.warn("ServiceWorker registration success ", performance.now());
+					swRegister = reg;
+					swRegister.update();
 					if (navigator.serviceWorker.controller) {
 						console.warn('serviceWorker controller postMessage ', htmlInfo.version, performance.now());
 						navigator.serviceWorker.controller.postMessage({ type: "VERSION", value: htmlInfo.version });
-					} else {
-						console.error("serviceWorker no controller!!");
-						if (htmlInfo.pwa) setTimeout(reload, 5000);
 					}
 					var curState;
 					if (reg.installing) {
@@ -465,17 +468,24 @@
 						curState = reg.active;
 					}
 					if (curState) {
-						curState.addEventListener("statechange", (e) => {
+						curState.addEventListener("statechange", function (e) {
 							console.warn("serviceWorker statechange", e.target.state, performance.now());
 						});
 					}
 					initHtml();
-				}).catch((reason) => {
+					//檢查sw運作
+					setTimeout(function () {
+						if (htmlInfo.pwa && !navigator.serviceWorker.controller)
+							unregisterSW(true);
+						else if (swRegister.waiting)
+							reload();
+					}, 5000);
+				}).catch(function (reason) {
 					console.error("ServiceWorker registration fail ", reason, performance.now());
 					initHtml();
 				});
-				var bOldIOS = undefined;
-				const update = () => {
+
+				const update = function () {
 					if (bOldIOS == undefined) {
 						bOldIOS = false;
 						if (/iPhone/.test(navigator.userAgent)) {
@@ -484,32 +494,28 @@
 								bOldIOS = true;
 						}
 					}
+					console.warn("serviceWorker update ", bOldIOS, !!navigator.serviceWorker.controller, performance.now());
 					if (swRegister) {
-						if (swRegister.waiting) {
-							console.warn("serviceWorker update swRegister.waiting", performance.now());
+						swRegister.update().catch(function (e) {
+							console.warn("serviceWorker update fail", e.toString(), performance.now());
 							unregisterSW();
-						} else {
-							console.warn("serviceWorker update swRegister.update", bOldIOS, !!navigator.serviceWorker.controller, performance.now());
-							swRegister.update().catch((e) => {
-								console.warn("serviceWorker update fail", e.toString(), performance.now());
-								unregisterSW();
-							});
-							if (navigator.serviceWorker.controller)
-								navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: bOldIOS });
-						}
+						});
 					}
+					if (navigator.serviceWorker.controller)
+						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: bOldIOS });
 				}
-				const unregisterSW = () => {
+				const unregisterSW = function (force) {
+					if (!force && !askConfirm()) return;
 					if (bUnregister) return;
 					bUnregister = true;
-					swRegister.unregister().then((boolean) => {
+					swRegister.unregister().then(function (boolean) {
 						console.warn('serviceWorker unregister', boolean, performance.now());
-					}).catch((reason) => {
+					}).catch(function (reason) {
 						console.error("ServiceWorker unregister fail ", reason, performance.now());
 					});
 					reload(true);
 				}
-				navigator.serviceWorker.addEventListener('message', (e) => {
+				navigator.serviceWorker.addEventListener('message', function (e) {
 					const data = e.data;
 					if (data) {
 						console.warn('serviceWorker message ', data, performance.now());
@@ -519,7 +525,7 @@
 							unregisterSW();
 					}
 				});
-				navigator.serviceWorker.addEventListener("controllerchange", () => {
+				navigator.serviceWorker.addEventListener("controllerchange", function () {
 					console.warn("serviceWorker controllerchange!", performance.now());
 					reload();
 				});
