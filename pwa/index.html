@@ -41,7 +41,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.15";
+		htmlInfo.version = "4.0.8.0";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-551dd41614.bgjson";
@@ -443,7 +443,7 @@
 				let swRegister;
 				scope = scope.substring(0, idx + 1);
 				console.warn('serviceWorker start', scope, navigator.serviceWorker.controller, performance.now());
-				navigator.serviceWorker.register(swFile, { scope: scope, updateViaCache: "none" }).then((reg) => {
+				navigator.serviceWorker.register(swFile, { scope: scope }).then((reg) => {
 					swRegister = reg;
 					console.warn("ServiceWorker registration success ", performance.now());
 					if (navigator.serviceWorker.controller) {
