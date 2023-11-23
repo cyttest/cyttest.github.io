@@ -41,7 +41,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.8";
+		htmlInfo.version = "4.0.8.1";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-551dd41614.bgjson";
@@ -480,7 +480,7 @@
 					setTimeout(function () {
 						if (htmlInfo.pwa && !navigator.serviceWorker.controller) {
 							alert("sw no controller");
-							unregisterSW(true);
+							unregisterSW();
 						} else if (swRegister.waiting) {
 							alert("sw is waiting");
 							reload();
@@ -501,18 +501,15 @@
 						}
 					}
 					console.warn("serviceWorker update ", bOldIOS, !!navigator.serviceWorker.controller, performance.now());
-					// if (swRegister) {
-					// 	swRegister.update().catch(function (e) {
-					// 		console.warn("serviceWorker update fail", e.toString(), performance.now());
-					// 		unregisterSW();
-					// 	});
-					// }
+					if (swRegister) {
+						swRegister.update().catch(function (e) {
+							console.warn("serviceWorker update fail", e.toString(), performance.now());
+						});
+					}
 					if (navigator.serviceWorker.controller)
-						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: true });
+						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: bOldIOS });
 				}
-				const unregisterSW = function (force) {
-					bgInfo.bNeedReload = true;
-					if (!force && !askConfirm()) return;
+				const unregisterSW = function () {
 					if (bUnregister) return;
 					bUnregister = true;
 					swRegister.unregister().then(function (boolean) {
@@ -529,8 +526,6 @@
 						if (data.type == "sw_version")
 							alert("sw_version=" + data.value);
 						else if (data.type == "reload")
-							reload();
-						else if (data.type == "unregister")
 							reload();
 					}
 				});
