@@ -41,7 +41,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.1";
+		htmlInfo.version = "4.0.8.2";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-551dd41614.bgjson";
@@ -410,29 +410,29 @@
 
 		function cacheHandle() {
 			var bReloading;
-			var askConfirm = function () {
-				if (htmlInfo.bViewInit) {
+			var askConfirm = function (reason) {
+				if (htmlInfo.bViewInit || reason) {
 					var strAsk;
 					switch (bgInfo.locale) {
 						case "zh_CN":
 						case undefined:
-							strAsk = "发现新版本，请更新后再进行游戏！"; break;
+							strAsk = "发现新版本，请更新后再进行游戏！" + reason; break;
 						case "zh_TW":
-							strAsk = "發現新版本，請更新後再進行遊戲！"; break;
+							strAsk = "發現新版本，請更新後再進行遊戲！" + reason; break;
 						default:
-							strAsk = "Found a new version, please update the game!"; break;
+							strAsk = "Found a new version, please update the game!" + reason; break;
 					}
 					if (!confirm(strAsk))
 						return false;
 				}
 				return true;
 			}
-			var reload = function (force = false) {
+			var reload = function (reason) {
 				console.warn('html call reload', performance.now());
 				bgInfo.bNeedReload = true;
 				if (!bReloading) {
 					//遊戲已進入時跳出詢問框
-					if (!askConfirm()) return;
+					if (!askConfirm(reason)) return;
 					bUrlLogout = true;
 					bReloading = true;
 					console.warn('===================  window.location.reload =======================', performance.now());
@@ -482,8 +482,7 @@
 							alert("sw no controller");
 							unregisterSW();
 						} else if (swRegister.waiting) {
-							alert("sw is waiting");
-							reload();
+							reload("sw is waiting");
 						}
 					}, 5000);
 				}).catch(function (reason) {
@@ -501,13 +500,13 @@
 						}
 					}
 					console.warn("serviceWorker update ", bOldIOS, !!navigator.serviceWorker.controller, performance.now());
-					// if (swRegister) {
-					// 	swRegister.update().catch(function (e) {
-					// 		console.warn("serviceWorker update fail", e.toString(), performance.now());
-					// 	});
-					// }
+					if (swRegister) {
+						swRegister.update().catch(function (e) {
+							console.warn("serviceWorker update fail", e.toString(), performance.now());
+						});
+					}
 					if (navigator.serviceWorker.controller)
-						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: true });
+						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: bOldIOS });
 				}
 				const unregisterSW = function () {
 					if (bUnregister) return;
@@ -517,7 +516,7 @@
 					}).catch(function (reason) {
 						console.error("ServiceWorker unregister fail ", reason, performance.now());
 					});
-					reload(true);
+					reload("unregisterSW");
 				}
 				navigator.serviceWorker.addEventListener('message', function (e) {
 					const data = e.data;
@@ -526,12 +525,12 @@
 						if (data.type == "sw_version")
 							alert("sw_version=" + data.value);
 						else if (data.type == "reload")
-							reload();
+							reload("sw call reload");
 					}
 				});
 				navigator.serviceWorker.addEventListener("controllerchange", function () {
 					console.warn("serviceWorker controllerchange!", performance.now());
-					reload();
+					reload("controllerchange");
 				});
 				window.unregisterSW = unregisterSW;
 				setInterval(update, 10000);
