@@ -443,7 +443,7 @@
 				let swRegister;
 				scope = scope.substring(0, idx + 1);
 				console.warn('serviceWorker start', scope, navigator.serviceWorker.controller, performance.now());
-				navigator.serviceWorker.register(swFile, { scope: scope }).then((reg) => {
+				navigator.serviceWorker.register(swFile, { scope: scope, updateViaCache: "none" }).then((reg) => {
 					swRegister = reg;
 					console.warn("ServiceWorker registration success ", performance.now());
 					if (navigator.serviceWorker.controller) {
@@ -476,7 +476,6 @@
 				});
 				var bOldIOS = undefined;
 				const update = () => {
-					console.warn("serviceWorker update", performance.now());
 					if (bOldIOS == undefined) {
 						bOldIOS = false;
 						if (/iPhone/.test(navigator.userAgent)) {
@@ -487,15 +486,16 @@
 					}
 					if (swRegister) {
 						if (swRegister.waiting) {
+							console.warn("serviceWorker update swRegister.waiting", performance.now());
 							unregisterSW();
-						} else if (bOldIOS) {
-							if (navigator.serviceWorker.controller)
-								navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: htmlInfo.version });
 						} else {
+							console.warn("serviceWorker update swRegister.update", bOldIOS, !!navigator.serviceWorker.controller, performance.now());
 							swRegister.update().catch((e) => {
 								console.warn("serviceWorker update fail", e.toString(), performance.now());
 								unregisterSW();
 							});
+							if (navigator.serviceWorker.controller)
+								navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: bOldIOS });
 						}
 					}
 				}
