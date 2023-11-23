@@ -523,7 +523,9 @@
 					const data = e.data;
 					if (data) {
 						console.warn('serviceWorker message ', data, performance.now());
-						if (data.type == "reload")
+						if (data.type == "sw_version")
+							alert("sw_version=" + data.value);
+						else if (data.type == "reload")
 							reload();
 						else if (data.type == "unregister")
 							reload();
