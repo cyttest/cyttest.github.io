@@ -41,7 +41,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.6";
+		htmlInfo.version = "4.0.8.7";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-551dd41614.bgjson";
@@ -478,10 +478,13 @@
 					initHtml();
 					//檢查sw運作
 					setTimeout(function () {
-						if (htmlInfo.pwa && !navigator.serviceWorker.controller)
+						if (htmlInfo.pwa && !navigator.serviceWorker.controller) {
+							alert("sw no controller");
 							unregisterSW(true);
-						else if (swRegister.waiting)
+						} else if (swRegister.waiting) {
+							alert("sw is waiting");
 							reload();
+						}
 					}, 5000);
 				}).catch(function (reason) {
 					console.error("ServiceWorker registration fail ", reason, performance.now());
