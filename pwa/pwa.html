@@ -16,55 +16,7 @@
             <img id="infoImage" src="" alt="">
         </div>
     </div>
-    <script>
-        //獲取locale參數
-        var url = window.location.href;
-        var wls = url.indexOf('?') != -1 ? "?" + url.split('?')[1] : "";
-        var args = parse(wls);
-        if (args.locale && args.locale.indexOf("-") != -1) {
-            var loc = args.locale.replace(/-/g, "_")
-            args.locale = loc;
-        }
-        // 取得locale json資料
-        var request = new XMLHttpRequest();
-        request.open('GET', 'pwa_dir/locale-5e5d16055c.json', true);
-        request.onload = function () {
-            if (request.status >= 200 && request.status < 400) {
-                // Success!
-                var data = JSON.parse(request.responseText);
-                var content = document.getElementById("contentPWA");
-                var divWord = document.getElementById("pwaWord");
-                var infoImage = document.getElementById("infoImage");
-                var ua = navigator.userAgent || navigator.vendor || window.opera;
-                var locale = args.locale ? args.locale : "zh_CN";
-                if (args.locale && args.locale == "ms_MY") locale = "id_ID"
-                if (data["content"][locale]) {
-                    divWord.innerHTML = data["content"][locale]
-                    infoImage.src = data["img"][locale];
-                } else {
-                    divWord.innerHTML = data["content"]["en_US"]
-                    infoImage.src = data["img"]["en_US"];
-                }
-            }
-        };
-        request.send();
-
-        function parse(str) {
-            var ret = {};
-            if (!str) {
-                return ret;
-            }
-            var seg = str.replace(/^\?/, "").split('&');
-            for (var i = seg.length - 1; i >= 0; i--) {
-                if (!seg[i]) {
-                    continue;
-                }
-                var s = seg[i].split('=');
-                ret[s[0]] = s[1];
-            }
-            return ret;
-        };
-    </script>
+    <script>var url=window.location.href,wls=-1!=url.indexOf("?")?"?"+url.split("?")[1]:"",args=parse(wls);if(args.locale&&-1!=args.locale.indexOf("-")){var loc=args.locale.replace(/-/g,"_");args.locale=loc}var request=new XMLHttpRequest;function parse(e){var r={};if(!e)return r;for(var t=e.replace(/^\?/,"").split("&"),n=t.length-1;0<=n;n--)if(t[n]){var a=t[n].split("=");r[a[0]]=a[1]}return r}request.open("GET","pwa_dir/locale-5e5d16055c.json",!0),request.onload=function(){if(200<=request.status&&request.status<400){var e=JSON.parse(request.responseText),r=(document.getElementById("contentPWA"),document.getElementById("pwaWord")),t=document.getElementById("infoImage"),n=(navigator.userAgent||navigator.vendor||window.opera,args.locale?args.locale:"zh_CN");args.locale&&"ms_MY"==args.locale&&(n="id_ID"),e.content[n]?(r.innerHTML=e.content[n],t.src=e.img[n]):(r.innerHTML=e.content.en_US,t.src=e.img.en_US)}},request.send()</script>
 </body>
 
 </html>

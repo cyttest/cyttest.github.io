@@ -10,10 +10,10 @@
 	<meta name="full-screen" content="true">
 	<meta name="360-fullscreen" content="true">
 	<meta name="theme-color" content="#000">
-	<!-- UC强制全屏 -->
+	
 	<meta name="full-screen" content="yes">
 	<meta name="browsermode" content="application">
-	<!-- QQ强制全屏 -->
+	
 	<meta name="x5-fullscreen" content="true">
 	<meta name="x5-page-mode" content="app">
 	<link rel="manifest" href="pwa_dir/manifest-1d98f25fee.json">
@@ -29,8 +29,8 @@
 		<div id="game" style="margin:auto;width:100%;height:100%;overflow:hidden;position:absolute" class="egret-player" data-entry-class="Main" data-orientation="auto" data-scale-mode="showAll" data-frame-rate="60" data-content-width="720" data-content-height="1280" data-show-paint-rect="false" data-multi-fingered="2" data-show-fps="false" data-show-log="false" data-show-fps-style="x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.5">
 		</div>
 	</div>
-
-	<script>
+	<script>function initDomain(){if(!bgInfo.preload&&!bgInfo.cdnLineDisable){var e=location.origin+location.pathname,r=(e=e.substring(0,e.lastIndexOf("/")+1)).slice(0,e.indexOf("."));if(/^(https?:\/\/)(cdnx-|cdnnonx-)/i.test(e)&&!/-[1-9]$/.test(r)){urlArray[0]=e;for(var n=1;n<6;n++)urlArray[n]=e.replace(".","-"+n+".");console.log("urlArray",urlArray)}}}function loadScript(o,t){for(var a=0,i=o.length,s=new Array(i),e=function(e,r){var n=o.indexOf(e);if(-1!=n){if(n<2?l(e,r,0==n):s[n]=r,a++,window.setProgress&&setProgress(Math.floor(a/i*10)),a==i){for(n=0;n<s.length;n++)s[n]&&l(o[n],s[n]);t()}}else a==i?l(e,r):(s.push(r),o.push(e))},l=function(e,r,n){document.body.appendChild(r),n||r.parentNode.removeChild(r)},r=function(n,o,e){var t=new XMLHttpRequest;console.log("loadReleaseJs",n,Date.now()-htmlInfo.htmlStartTime),t.open("GET",replaceDomain(n,e),!0),t.onload=function(e){var r;t.status<400&&t.responseText?(-1!=n.indexOf(".css")?((r=document.createElement("style")).type="text/css",r.innerHTML=t.responseText):((r=document.createElement("script")).type="text/javascript",r.text=t.responseText),console.log("loadReleaseJs compvare",n,Date.now()-htmlInfo.htmlStartTime),o(n,r)):a()};var a=function(){console.log("loadReleaseJs onerror",n,Date.now()-htmlInfo.htmlStartTime),t.onload=null,t.onerror=null,window.setProgressTip&&setProgressTip(n.substring(n.lastIndexOf("/")+1)),setTimeout(r,1e3,n,o,e)};t.onerror=a,t.send(null)},n=0;n<i;n++)r(o[n],e,n%6);thmJS&&r(thmJS,e,0),videoJS&&r(videoJS,e,0)}function parseUrlParams(e){console.warn("parse",location.search);for(var r=location.search.replace(/^\?/,"").split("&"),n=r.length-1;0<=n;n--)if(r[n]){var o=r[n].split("=");null==e[o[0]]&&(e[o[0]]=o[1])}return e}function replaceDomain(e,r){if(!r)return e;var n=e;return r&&urlArray[r]&&(n=urlArray[r]+n),n}function cacheHandle(){var r,n,o=function(e){if(console.warn("html call reload",e,performance.now()),bgInfo.bNeedReload=!0,!r){if(!function(e){if(n)return!1;if(htmlInfo.bViewInit||e){var r;switch(n=!0,e||(e=""),bgInfo.locale){case"zh_CN":case void 0:r="发现新版本，请更新后再进行游戏！"+e;break;case"zh_TW":r="發現新版本，請更新後再進行遊戲！"+e;break;default:r="Found a new version, please update the game!"+e}if(!confirm(r))return n=!1;n=!1}return!0}())return;bUrlLogout=!0,r=!0,console.warn("===================  window.location.reload =======================",performance.now()),window.location.reload(),setInterval(function(){window.location.reload()},5e3)}};if("serviceWorker"in navigator){var t,e=htmlInfo.pwa?"pwa_sw.js":"index_serviceworker.js",a=self.location.pathname,i=a.lastIndexOf("/"),s=!1,l=void 0;a=a.substring(0,i+1),console.warn("serviceWorker start",a,navigator.serviceWorker.controller,performance.now()),navigator.serviceWorker.register(e,{scope:a,updateViaCache:"none"}).then(function(e){var r;console.warn("ServiceWorker registration success ",performance.now()),(t=e).update(),navigator.serviceWorker.controller&&(console.warn("serviceWorker controller postMessage ",htmlInfo.version,performance.now()),navigator.serviceWorker.controller.postMessage({type:"VERSION",value:htmlInfo.version})),e.installing?(console.warn("serviceWorker installing",performance.now()),r=e.installing):e.waiting?(console.warn("serviceWorker waiting",performance.now()),r=e.waiting):e.active&&(console.warn("serviceWorker active",performance.now()),r=e.active),r&&r.addEventListener("statechange",function(e){console.warn("serviceWorker statechange",e.target.state,performance.now())}),initHtml(),setTimeout(function(){htmlInfo.pwa&&!navigator.serviceWorker.controller?(alert("sw no controller"),c()):t.waiting&&o("sw is waiting")},5e3)}).catch(function(e){console.error("ServiceWorker registration fail ",e,performance.now()),initHtml()});var c=function(){s||(s=!0,t.unregister().then(function(e){console.warn("serviceWorker unregister",e,performance.now())}).catch(function(e){console.error("ServiceWorker unregister fail ",e,performance.now())}),o("unregisterSW"))};navigator.serviceWorker.addEventListener("message",function(e){var r=e.data;r&&(console.warn("serviceWorker message ",r,performance.now()),"sw_version"==r.type?alert("sw_version="+r.value):"sw_reload"==r.type&&o("sw call reload"+r.value))}),navigator.serviceWorker.addEventListener("controllerchange",function(){console.warn("serviceWorker controllerchange!",performance.now()),o("controllerchange")}),window.unregisterSW=c,setInterval(function(){if(null==l&&(l=!1,/iPhone/.test(navigator.userAgent))){var e=navigator.userAgent.match(/OS (\d+)/);e[1]&&+e[1]<15&&(l=!0)}console.warn("serviceWorker update ",l,!!navigator.serviceWorker.controller,performance.now()),t&&t.update().catch(function(e){console.warn("serviceWorker update fail",e.toString(),performance.now())}),navigator.serviceWorker.controller&&navigator.serviceWorker.controller.postMessage({type:"UPDATE",value:l})},1e4)}else if(window.applicationCache&&!htmlInfo.pwa){var f=window.location.pathname.split("/"),v=f[f.length-1];window.location.href=window.location.href.replace(v,"index_a.html")}else initHtml()}
+		//html_block_start//
 		var urlArray = [];
 		var bUrlLogout = false;
 		var bInitWeb = false;
@@ -41,7 +41,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.15";
+		htmlInfo.version = "4.0.8.16";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-551dd41614.bgjson";
@@ -166,31 +166,10 @@
 			"libs/dragonBones-d3e55aba9d.min.js",
 			"libs/BGGameLib-e6253c61ef.min.js",
 			"libs/soundjs-be02be4ef1.min.js",
-			"libs/main-4c3f021db1.js",
+			"libs/main-68748180c4.js",
 			"libs/h5module-c9e61b69ef.js"
 		];
-		htmlInfo.pwaPage = true;
-		htmlInfo.pwa = location.search.indexOf("pwaMode=true") != -1 ||
-			navigator.standalone ||
-			window.matchMedia("(display-mode: standalone)").matches ||
-			window.matchMedia("(display-mode: fullscreen)").matches;
-		console.warn("pwaPage=", htmlInfo.pwaPage, "pwa=", htmlInfo.pwa);
-		if (!htmlInfo.pwa) {
-			//顯示教學
-			var div = document.createElement("div");
-			div.setAttribute("style", "-webkit-overflow-scrolling:touch; overflow: hidden;width:100%;height:100%;position:fixed;background-color:#ffffff;z-index:49999;top:0;left:0");
-			pwaFrame = document.createElement("Iframe");
-			pwaFrame.id = "pwaFrame";
-			pwaFrame.style.width = "100%";
-			pwaFrame.style.height = "100%";
-			pwaFrame.style.border = "none";
-			pwaFrame.src = "pwa.html?locale=" + bgInfo.locale;
-			document.body.appendChild(div);
-			div.appendChild(pwaFrame);
-		} else {
-			bgInfo.cdnLineDisable = true;
-			cacheHandle();
-		}
+
 		function initHtml() {
 			console.warn("initHtml");
 			if (bInitWeb) return;
@@ -293,267 +272,31 @@
 				htmlInfo.adUrl = "resource/custom/vo06/ad-9ae8aea433.jpg";
 				htmlInfo.adUrl_L = "resource/custom/vo06/ad_L-98eb1c6d36.jpg";
 			}
-			var initDomain = function () {
-				if (bgInfo.preload || bgInfo.cdnLineDisable) return;
-				var reg = /^(https?:\/\/)(cdnx-|cdnnonx-)/i;
-				var reg2 = /-[1-9]$/
-				var url = location.origin + location.pathname;
-				url = url.substring(0, url.lastIndexOf("/") + 1);
-				var first = url.slice(0, url.indexOf('.'));
-				if (reg.test(url) && !reg2.test(first)) {
-					urlArray[0] = url;
-					for (var i = 1; i < 6; i++)
-						urlArray[i] = url.replace(".", "-" + i + ".");
-					console.log("urlArray", urlArray);
-				}
-			}
 			initDomain();
 			loadScript(listJS, function () {
 				egret.sys.$START_TIME = htmlInfo.htmlStartTime;
 				window.runEgret();
 			})
 		}
-
-		function loadScript(list, callback) {
-			var loaded = 0;
-			var total = list.length;
-			var listScript = new Array(total);
-			var loadComp = function (url, script) {
-				var idx = list.indexOf(url);
-				if (idx != -1) {
-					if (idx < 2) {
-						appendChildJS(url, script, idx == 0);
-					} else
-						listScript[idx] = script;
-					loaded++;
-					if (window.setProgress) setProgress(Math.floor(loaded / total * 10));
-					if (loaded == total) {
-						for (idx = 0; idx < listScript.length; idx++) {
-							if (listScript[idx]) {
-								appendChildJS(list[idx], listScript[idx]);
-							}
-						}
-						callback();
-					}
-				} else {
-					if (loaded == total) {
-						appendChildJS(url, script);
-					} else {
-						listScript.push(script);
-						list.push(url);
-					}
-				}
-			}
-			var appendChildJS = function (url, script, keep) {
-				document.body.appendChild(script);
-				if (!keep) script.parentNode.removeChild(script);
-			}
-			var loadReleaseJs = function (url, callback, domainIdx) {
-				const xhr = new XMLHttpRequest();
-				console.log("loadReleaseJs", url, Date.now() - htmlInfo.htmlStartTime);
-				xhr.open('GET', replaceDomain(url, domainIdx), true);
-				xhr.onload = function (e) {
-					if (xhr.status < 400 && xhr.responseText) {
-						var script;
-						if (url.indexOf(".css") != -1) {
-							script = document.createElement('style');
-							script.type = "text/css";
-							script.innerHTML = xhr.responseText;
-						} else {
-							script = document.createElement('script');
-							script.type = "text/javascript";
-							script.text = xhr.responseText;
-						}
-						console.log("loadReleaseJs complete", url, Date.now() - htmlInfo.htmlStartTime);
-						callback(url, script);
-					} else {
-						onerror();
-					}
-				};
-				var onerror = function () {
-					console.log("loadReleaseJs onerror", url, Date.now() - htmlInfo.htmlStartTime);
-					xhr.onload = null;
-					xhr.onerror = null;
-					if (window.setProgressTip) setProgressTip(url.substring(url.lastIndexOf("/") + 1));
-					setTimeout(loadReleaseJs, 1000, url, callback, domainIdx);
-				}
-				xhr.onerror = onerror;
-				xhr.send(null);
-			}
-			for (var i = 0; i < total; i++)
-				loadReleaseJs(list[i], loadComp, i % 6);
-			if (thmJS) loadReleaseJs(thmJS, loadComp, 0);
-			if (videoJS) loadReleaseJs(videoJS, loadComp, 0);
-		};
-
-		function parseUrlParams(ret) {
-			console.warn("parse", location.search);
-			var url = location.search.replace(/^\?/, "");
-			var seg = url.split('&');
-			for (var i = seg.length - 1; i >= 0; i--) {
-				if (!seg[i]) continue;
-				var s = seg[i].split('=');
-				if (ret[s[0]] == undefined)
-					ret[s[0]] = s[1];
-			}
-			return ret;
+		htmlInfo.pwaPage = true;
+		htmlInfo.pwa = location.search.indexOf("pwaMode=true") != -1 || navigator.standalone || window.matchMedia("(display-mode: standalone)").matches || window.matchMedia("(display-mode: fullscreen)").matches;
+		console.warn("pwaPage=", htmlInfo.pwaPage, "pwa=", htmlInfo.pwa);
+		if (!htmlInfo.pwa) {
+			var div = document.createElement("div");
+			div.setAttribute("style", "-webkit-overflow-scrolling:touch; overflow: hidden;width:100%;height:100%;position:fixed;background-color:#ffffff;z-index:49999;top:0;left:0");
+			pwaFrame = document.createElement("Iframe");
+			pwaFrame.setAttribute("style", "width:100%;height:100%;border:none");
+			var pwa_html = "pwa.html"
+			if (bgInfo.locale) pwa_html += "?locale=" + bgInfo.locale;
+			pwaFrame.src = pwa_html;
+			document.body.appendChild(div);
+			div.appendChild(pwaFrame);
+		} else {
+			bgInfo.cdnLineDisable = true;
+			cacheHandle();
 		}
-
-		function replaceDomain(key, idx) {
-			// console.log("replaceDomain", key, idx, (typeof egret === 'undefined') ? "" : egret.getTimer());
-			if (!idx) return key;
-			var url = key;
-			if (idx && urlArray[idx]) {
-				url = urlArray[idx] + url;
-			}
-			return url;
-		};
-
-		function cacheHandle() {
-			var bReloading;
-			var bAsking;
-			var askConfirm = function (reason) {
-				if (bAsking) return false;
-				if (htmlInfo.bViewInit || reason) {
-					bAsking = true;
-					var strAsk;
-					switch (bgInfo.locale) {
-						case "zh_CN":
-						case undefined:
-							strAsk = "发现新版本，请更新后再进行游戏！" + reason; break;
-						case "zh_TW":
-							strAsk = "發現新版本，請更新後再進行遊戲！" + reason; break;
-						default:
-							strAsk = "Found a new version, please update the game!" + reason; break;
-					}
-					if (!confirm(strAsk)) {
-						bAsking = false;
-						return false;
-					}
-					bAsking = false;
-				}
-				return true;
-			}
-			var reload = function (reason) {
-				console.warn('html call reload', reason, performance.now());
-				bgInfo.bNeedReload = true;
-				if (!bReloading) {
-					//遊戲已進入時跳出詢問框
-					if (!askConfirm()) return;
-					bUrlLogout = true;
-					bReloading = true;
-					console.warn('===================  window.location.reload =======================', performance.now());
-					window.location.reload();
-					setInterval(function () {
-						window.location.reload();
-					}, 5000);
-				}
-			}
-			if ('serviceWorker' in navigator) {
-				let swFile = htmlInfo.pwa ? "pwa_sw.js" : "index_serviceworker.js";
-				let scope = self.location.pathname;
-				let idx = scope.lastIndexOf("/");
-				let bUnregister = false;
-				let swRegister;
-				var bOldIOS = undefined;
-				scope = scope.substring(0, idx + 1);
-				console.warn('serviceWorker start', scope, navigator.serviceWorker.controller, performance.now());
-				navigator.serviceWorker.register(swFile, { scope: scope, updateViaCache: "none" }).then(function (reg) {
-					console.warn("ServiceWorker registration success ", performance.now());
-					swRegister = reg;
-					swRegister.update();
-					if (navigator.serviceWorker.controller) {
-						console.warn('serviceWorker controller postMessage ', htmlInfo.version, performance.now());
-						navigator.serviceWorker.controller.postMessage({ type: "VERSION", value: htmlInfo.version });
-					}
-					var curState;
-					if (reg.installing) {
-						console.warn('serviceWorker installing', performance.now());
-						curState = reg.installing;
-					} else if (reg.waiting) {
-						console.warn('serviceWorker waiting', performance.now());
-						curState = reg.waiting;
-					} else if (reg.active) {
-						console.warn('serviceWorker active', performance.now());
-						curState = reg.active;
-					}
-					if (curState) {
-						curState.addEventListener("statechange", function (e) {
-							console.warn("serviceWorker statechange", e.target.state, performance.now());
-						});
-					}
-					initHtml();
-					//檢查sw運作
-					setTimeout(function () {
-						if (htmlInfo.pwa && !navigator.serviceWorker.controller) {
-							alert("sw no controller");
-							unregisterSW();
-						} else if (swRegister.waiting) {
-							reload("sw is waiting");
-						}
-					}, 5000);
-				}).catch(function (reason) {
-					console.error("ServiceWorker registration fail ", reason, performance.now());
-					initHtml();
-				});
-
-				const update = function () {
-					if (bOldIOS == undefined) {
-						bOldIOS = false;
-						if (/iPhone/.test(navigator.userAgent)) {
-							var ver = navigator.userAgent.match(/OS (\d+)/);
-							if (ver[1] && +ver[1] < 15)
-								bOldIOS = true;
-						}
-					}
-					console.warn("serviceWorker update ", bOldIOS, !!navigator.serviceWorker.controller, performance.now());
-					// if (swRegister) {
-					// 	swRegister.update().catch(function (e) {
-					// 		console.warn("serviceWorker update fail", e.toString(), performance.now());
-					// 	});
-					// }
-					if (navigator.serviceWorker.controller)
-						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: true });
-				}
-				const unregisterSW = function () {
-					if (bUnregister) return;
-					bUnregister = true;
-					swRegister.unregister().then(function (boolean) {
-						console.warn('serviceWorker unregister', boolean, performance.now());
-					}).catch(function (reason) {
-						console.error("ServiceWorker unregister fail ", reason, performance.now());
-					});
-					reload("unregisterSW");
-				}
-				navigator.serviceWorker.addEventListener('message', function (e) {
-					const data = e.data;
-					if (data) {
-						console.warn('serviceWorker message ', data, performance.now());
-						if (data.type == "sw_version")
-							alert("sw_version=" + data.value);
-						else if (data.type == "sw_reload")
-							reload("sw call reload" + data.value);
-					}
-				});
-				navigator.serviceWorker.addEventListener("controllerchange", function () {
-					console.warn("serviceWorker controllerchange!", performance.now());
-					reload("controllerchange");
-				});
-				window.unregisterSW = unregisterSW;
-				setInterval(update, 10000);
-			} else {
-				if (window.applicationCache && !htmlInfo.pwa) {
-					let arr = window.location.pathname.split("/");
-					let htmlName = arr[arr.length - 1];
-					window.location.href = window.location.href.replace(htmlName, "index_a.html");
-				} else {
-					initHtml();
-				}
-			}
-			
-		}
-
-	</script>
+		//html_block_end//
+		</script>
 </body>
 
 </html>
