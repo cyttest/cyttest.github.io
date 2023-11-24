@@ -458,7 +458,7 @@
 				var bOldIOS = undefined;
 				scope = scope.substring(0, idx + 1);
 				console.warn('serviceWorker start', scope, navigator.serviceWorker.controller, performance.now());
-				navigator.serviceWorker.register(swFile, { scope: scope }).then(function (reg) {
+				navigator.serviceWorker.register(swFile, { scope: scope, updateViaCache: "none" }).then(function (reg) {
 					console.warn("ServiceWorker registration success ", performance.now());
 					swRegister = reg;
 					swRegister.update();
@@ -506,7 +506,7 @@
 								bOldIOS = true;
 						}
 					}
-					console.warn("serviceWorker update ", bOldIOS, !!navigator.serviceWorker.controller, !!swRegister,performance.now());
+					console.warn("serviceWorker update ", bOldIOS, !!navigator.serviceWorker.controller, performance.now());
 					if (swRegister) {
 						swRegister.update().catch(function (e) {
 							console.warn("serviceWorker update fail", e.toString(), performance.now());
