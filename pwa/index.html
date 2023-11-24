@@ -410,8 +410,11 @@
 
 		function cacheHandle() {
 			var bReloading;
+			var bAsking;
 			var askConfirm = function (reason) {
+				if (bAsking) return false;
 				if (htmlInfo.bViewInit || reason) {
+					bAsking = true;
 					var strAsk;
 					switch (bgInfo.locale) {
 						case "zh_CN":
@@ -422,8 +425,11 @@
 						default:
 							strAsk = "Found a new version, please update the game!" + reason; break;
 					}
-					if (!confirm(strAsk))
+					if (!confirm(strAsk)) {
+						bAsking = false;
 						return false;
+					}
+					bAsking = false;
 				}
 				return true;
 			}
