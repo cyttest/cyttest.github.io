@@ -41,7 +41,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.12";
+		htmlInfo.version = "4.0.8.15";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-551dd41614.bgjson";
@@ -166,8 +166,8 @@
 			"libs/dragonBones-d3e55aba9d.min.js",
 			"libs/BGGameLib-e6253c61ef.min.js",
 			"libs/soundjs-be02be4ef1.min.js",
-			"libs/main-326b0500af.js",
-			"libs/h5module-8915a9fa9a.js"
+			"libs/main-4c3f021db1.js",
+			"libs/h5module-c9e61b69ef.js"
 		];
 		htmlInfo.pwaPage = true;
 		htmlInfo.pwa = location.search.indexOf("pwaMode=true") != -1 ||
@@ -434,11 +434,11 @@
 				return true;
 			}
 			var reload = function (reason) {
-				console.warn('html call reload', performance.now());
+				console.warn('html call reload', reason, performance.now());
 				bgInfo.bNeedReload = true;
 				if (!bReloading) {
 					//遊戲已進入時跳出詢問框
-					if (!askConfirm(reason)) return;
+					if (!askConfirm()) return;
 					bUrlLogout = true;
 					bReloading = true;
 					console.warn('===================  window.location.reload =======================', performance.now());
@@ -540,10 +540,14 @@
 				});
 				window.unregisterSW = unregisterSW;
 				setInterval(update, 10000);
-			} else if (window.applicationCache && !htmlInfo.pwa) {
-				let arr = window.location.pathname.split("/");
-				let htmlName = arr[arr.length - 1];
-				window.location.href = window.location.href.replace(htmlName, "index_a.html");
+			} else {
+				if (window.applicationCache && !htmlInfo.pwa) {
+					let arr = window.location.pathname.split("/");
+					let htmlName = arr[arr.length - 1];
+					window.location.href = window.location.href.replace(htmlName, "index_a.html");
+				} else {
+					initHtml();
+				}
 			}
 			
 		}
