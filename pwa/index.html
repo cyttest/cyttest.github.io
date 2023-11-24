@@ -41,7 +41,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.6";
+		htmlInfo.version = "4.0.8.7";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-551dd41614.bgjson";
@@ -524,8 +524,8 @@
 						console.warn('serviceWorker message ', data, performance.now());
 						if (data.type == "sw_version")
 							alert("sw_version=" + data.value);
-						else if (data.type == "reload")
-							reload("sw call reload");
+						else if (data.type == "sw_reload")
+							reload("sw call reload" + data.value);
 					}
 				});
 				navigator.serviceWorker.addEventListener("controllerchange", function () {
