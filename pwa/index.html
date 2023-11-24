@@ -507,13 +507,13 @@
 						}
 					}
 					console.warn("serviceWorker update ", bOldIOS, !!navigator.serviceWorker.controller, performance.now());
-					if (swRegister) {
-						swRegister.update().catch(function (e) {
-							console.warn("serviceWorker update fail", e.toString(), performance.now());
-						});
-					}
+					// if (swRegister) {
+					// 	swRegister.update().catch(function (e) {
+					// 		console.warn("serviceWorker update fail", e.toString(), performance.now());
+					// 	});
+					// }
 					if (navigator.serviceWorker.controller)
-						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: bOldIOS });
+						navigator.serviceWorker.controller.postMessage({ type: "UPDATE", value: true });
 				}
 				const unregisterSW = function () {
 					if (bUnregister) return;
