@@ -198,6 +198,9 @@ body{
         flex:1 1 25%;
     }
 }
+.wordRed{
+    color: #ff0000;
+}
 
 #loader {
     border-width: 0.4rem;
