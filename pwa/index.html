@@ -1,36 +1,31 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>BG真人娱乐</title>
-	<meta name="viewport" id="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<meta name="mobile-web-app-capable" content="yes">
-	<meta name="full-screen" content="true">
-	<meta name="360-fullscreen" content="true">
-	<meta name="theme-color" content="#000">
-	
-	<meta name="full-screen" content="yes">
-	<meta name="browsermode" content="application">
-	
-	<meta name="x5-fullscreen" content="true">
-	<meta name="x5-page-mode" content="app">
-	<link rel="manifest" href="pwa_dir/manifest-1d98f25fee.json">
-	<link rel="apple-touch-icon" sizes="180x180" href="pwa_dir/180x180-74e28c8073.png">
-
-	
-	<style>body,html{width:100%;height:100%;margin:0;padding:0;border:0;background:#000;font-family:'微软雅黑','微軟正黑體',Arial;-ms-touch-action:none;-webkit-overflow-scrolling:touch}#preloader{border-width:6px;border-style:solid;border-color:#dcdcdc #dcdcdc #f2a63b00 #dcdcdc;border-radius:50%;display:block;width:80px;height:80px;-webkit-animation:rotate 1.2s linear infinite;animation:rotate 1.2s linear infinite;position:fixed;left:50%;top:50%;margin-left:-43px;margin-top:-43px;box-sizing:border-box}@-webkit-keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
+<meta charset="utf-8">
+<title>BG真人娱乐</title>
+<meta name="viewport" id="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="full-screen" content="true">
+<meta name="360-fullscreen" content="true">
+<meta name="theme-color" content="#000">
+<meta name="full-screen" content="yes">
+<meta name="browsermode" content="application">
+<meta name="x5-fullscreen" content="true">
+<meta name="x5-page-mode" content="app">
+<link rel="manifest" href="pwa_dir/manifest-1d98f25fee.json">
+<link rel="apple-touch-icon" sizes="180x180" href="pwa_dir/180x180-74e28c8073.png">
+<style>body,html{width:100%;height:100%;margin:0;padding:0;border:0;background:#000;font-family:'微软雅黑','微軟正黑體',Arial;-ms-touch-action:none;-webkit-overflow-scrolling:touch}#preloader{border-width:6px;border-style:solid;border-color:#dcdcdc #dcdcdc #f2a63b00 #dcdcdc;border-radius:50%;display:block;width:80px;height:80px;-webkit-animation:rotate 1.2s linear infinite;animation:rotate 1.2s linear infinite;position:fixed;left:50%;top:50%;margin-left:-43px;margin-top:-43px;box-sizing:border-box}@-webkit-keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
 </head>
-
 <body>
-	<div id="preloader"></div>
-	<div id="mainBox">
-		<div id="game" style="margin:auto;width:100%;height:100%;overflow:hidden;position:absolute" class="egret-player" data-entry-class="Main" data-orientation="auto" data-scale-mode="showAll" data-frame-rate="60" data-content-width="720" data-content-height="1280" data-show-paint-rect="false" data-multi-fingered="2" data-show-fps="false" data-show-log="false" data-show-fps-style="x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.5">
-		</div>
-	</div>
-	<script>function initDomain(){if(!bgInfo.preload&&!bgInfo.cdnLineDisable){var e=location.origin+location.pathname,r=(e=e.substring(0,e.lastIndexOf("/")+1)).slice(0,e.indexOf("."));if(/^(https?:\/\/)(cdnx-|cdnnonx-)/i.test(e)&&!/-[1-9]$/.test(r)){urlArray[0]=e;for(var n=1;n<6;n++)urlArray[n]=e.replace(".","-"+n+".");console.log("urlArray",urlArray)}}}function loadScript(o,t){for(var a=0,i=o.length,s=new Array(i),e=function(e,r){var n=o.indexOf(e);if(-1!=n){if(n<2?l(e,r,0==n):s[n]=r,a++,window.setProgress&&setProgress(Math.floor(a/i*10)),a==i){for(n=0;n<s.length;n++)s[n]&&l(o[n],s[n]);t()}}else a==i?l(e,r):(s.push(r),o.push(e))},l=function(e,r,n){document.body.appendChild(r),n||r.parentNode.removeChild(r)},r=function(n,o,e){var t=new XMLHttpRequest;console.log("loadReleaseJs",n,Date.now()-htmlInfo.htmlStartTime),t.open("GET",replaceDomain(n,e),!0),t.onload=function(e){var r;t.status<400&&t.responseText?(-1!=n.indexOf(".css")?((r=document.createElement("style")).type="text/css",r.innerHTML=t.responseText):((r=document.createElement("script")).type="text/javascript",r.text=t.responseText),console.log("loadReleaseJs compvare",n,Date.now()-htmlInfo.htmlStartTime),o(n,r)):a()};var a=function(){console.log("loadReleaseJs onerror",n,Date.now()-htmlInfo.htmlStartTime),t.onload=null,t.onerror=null,window.setProgressTip&&setProgressTip(n.substring(n.lastIndexOf("/")+1)),setTimeout(r,1e3,n,o,e)};t.onerror=a,t.send(null)},n=0;n<i;n++)r(o[n],e,n%6);thmJS&&r(thmJS,e,0),videoJS&&r(videoJS,e,0)}function parseUrlParams(e){console.warn("parse",location.search);for(var r=location.search.replace(/^\?/,"").split("&"),n=r.length-1;0<=n;n--)if(r[n]){var o=r[n].split("=");null==e[o[0]]&&(e[o[0]]=o[1])}return e}function replaceDomain(e,r){if(!r)return e;var n=e;return r&&urlArray[r]&&(n=urlArray[r]+n),n}function cacheHandle(){var r,n,o=function(e){if(console.warn("html call reload",e,performance.now()),bgInfo.bNeedReload=!0,!r){if(!function(e){if(n)return!1;if(htmlInfo.bViewInit||e){var r;switch(n=!0,e||(e=""),bgInfo.locale){case"zh_CN":case void 0:r="发现新版本，请更新后再进行游戏！"+e;break;case"zh_TW":r="發現新版本，請更新後再進行遊戲！"+e;break;default:r="Found a new version, please update the game!"+e}if(!confirm(r))return n=!1;n=!1}return!0}())return;bUrlLogout=!0,r=!0,console.warn("===================  window.location.reload =======================",performance.now()),window.location.reload(),setInterval(function(){window.location.reload()},5e3)}};if("serviceWorker"in navigator){var t,e=htmlInfo.pwa?"pwa_sw.js":"index_serviceworker.js",a=self.location.pathname,i=a.lastIndexOf("/"),s=!1,l=void 0;a=a.substring(0,i+1),console.warn("serviceWorker start",a,navigator.serviceWorker.controller,performance.now()),navigator.serviceWorker.register(e,{scope:a,updateViaCache:"none"}).then(function(e){var r;console.warn("ServiceWorker registration success ",performance.now()),(t=e).update(),navigator.serviceWorker.controller&&(console.warn("serviceWorker controller postMessage ",htmlInfo.version,performance.now()),navigator.serviceWorker.controller.postMessage({type:"VERSION",value:htmlInfo.version})),e.installing?(console.warn("serviceWorker installing",performance.now()),r=e.installing):e.waiting?(console.warn("serviceWorker waiting",performance.now()),r=e.waiting):e.active&&(console.warn("serviceWorker active",performance.now()),r=e.active),r&&r.addEventListener("statechange",function(e){console.warn("serviceWorker statechange",e.target.state,performance.now())}),initHtml(),setTimeout(function(){htmlInfo.pwa&&!navigator.serviceWorker.controller?(alert("sw no controller"),c()):t.waiting&&o("sw is waiting")},5e3)}).catch(function(e){console.error("ServiceWorker registration fail ",e,performance.now()),initHtml()});var c=function(){s||(s=!0,t.unregister().then(function(e){console.warn("serviceWorker unregister",e,performance.now())}).catch(function(e){console.error("ServiceWorker unregister fail ",e,performance.now())}),o("unregisterSW"))};navigator.serviceWorker.addEventListener("message",function(e){var r=e.data;r&&("sw_version"==r.type?alert("sw_version="+r.value,performance.now()):"sw_reload"==r.type?o("sw_reload="+r.value,performance.now()):"sw_msg"==r.type&&console.warn("sw_msg="+r.value,performance.now()))}),navigator.serviceWorker.addEventListener("controllerchange",function(){console.warn("serviceWorker controllerchange!",performance.now()),o("controllerchange")}),window.unregisterSW=c,setInterval(function(){if(null==l&&(l=!1,/iPhone/.test(navigator.userAgent))){var e=navigator.userAgent.match(/OS (\d+)/);e[1]&&+e[1]<15&&(l=!0)}console.warn("serviceWorker update ",l,!!navigator.serviceWorker.controller,performance.now()),t&&t.update().catch(function(e){console.warn("serviceWorker update fail",e.toString(),performance.now())}),navigator.serviceWorker.controller&&navigator.serviceWorker.controller.postMessage({type:"UPDATE",value:l})},6e4)}else if(window.applicationCache&&!htmlInfo.pwa){var f=window.location.pathname.split("/"),v=f[f.length-1];window.location.href=window.location.href.replace(v,"index_a.html")}else initHtml()}
-		//html_block_start//
+<div id="preloader"></div>
+<div id="mainBox">
+<div id="game" style="margin:auto;width:100%;height:100%;overflow:hidden;position:absolute" class="egret-player" data-entry-class="Main" data-orientation="auto" data-scale-mode="showAll" data-frame-rate="60" data-content-width="720" data-content-height="1280" data-show-paint-rect="false" data-multi-fingered="2" data-show-fps="false" data-show-log="false" data-show-fps-style="x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.5">
+</div>
+</div>
+<script>function parseUrlParams(e){console.warn("parse",location.search);for(var r=location.search.replace(/^\?/,"").split("&"),n=r.length-1;0<=n;n--)if(r[n]){var o=r[n].split("=");null==e[o[0]]&&(e[o[0]]=o[1])}return e}function loadScript(o,t){for(var a=0,i=o.length,l=new Array(i),e=function(e,r){var n=o.indexOf(e);if(-1!=n){if(n<2?c(e,r,0==n):l[n]=r,a++,window.setProgress&&setProgress(Math.floor(a/i*10)),a==i){for(n=0;n<l.length;n++)l[n]&&c(o[n],l[n]);t()}}else a==i?c(e,r):(l.push(r),o.push(e))},c=function(e,r,n){document.body.appendChild(r),n||r.parentNode.removeChild(r)},r=function(n,o,e){var t=new XMLHttpRequest;console.log("loadReleaseJs",n,Date.now()-htmlInfo.htmlStartTime),t.open("GET",replaceDomain(n,e),!0),t.onload=function(e){var r;t.status<400&&t.responseText?(-1!=n.indexOf(".css")?((r=document.createElement("style")).type="text/css",r.innerHTML=t.responseText):((r=document.createElement("script")).type="text/javascript",r.text=t.responseText),console.log("loadReleaseJs compvare",n,Date.now()-htmlInfo.htmlStartTime),o(n,r)):a()};var a=function(){console.log("loadReleaseJs onerror",n,Date.now()-htmlInfo.htmlStartTime),t.onload=null,t.onerror=null,window.setProgressTip&&setProgressTip(n.substring(n.lastIndexOf("/")+1)),setTimeout(r,1e3,n,o,e)};t.onerror=a,t.send(null)},n=0;n<i;n++)r(o[n],e,n%6);thmJS&&r(thmJS,e,0),videoJS&&r(videoJS,e,0)}function initDomain(){if(!bgInfo.preload&&!bgInfo.cdnLineDisable){var e=location.origin+location.pathname,r=(e=e.substring(0,e.lastIndexOf("/")+1)).slice(0,e.indexOf("."));if(/^(https?:\/\/)(cdnx-|cdnnonx-)/i.test(e)&&!/-[1-9]$/.test(r)){urlArray[0]=e;for(var n=1;n<6;n++)urlArray[n]=e.replace(".","-"+n+".");console.log("urlArray",urlArray)}}}function replaceDomain(e,r){if(!r)return e;var n=e;return r&&urlArray[r]&&(n=urlArray[r]+n),n}function initHtml(){console.warn("initHtml"),bInitWeb||(bInitWeb=!0,checkSn(),loadScript(listJS,function(){egret.sys.$START_TIME=htmlInfo.htmlStartTime,window.runEgret()}))}function checkPWA(){if(htmlInfo.pwaPage=!0,htmlInfo.pwa=-1!=location.search.indexOf("pwaMode=true")||navigator.standalone||window.matchMedia("(display-mode: standalone)").matches||window.matchMedia("(display-mode: fullscreen)").matches,console.warn("pwaPage=",htmlInfo.pwaPage,"pwa=",htmlInfo.pwa),htmlInfo.pwa)bgInfo.cdnLineDisable=!0,cacheHandle();else{var e=document.createElement("div");e.setAttribute("style","-webkit-overflow-scrolling:touch; overflow: hidden;width:100%;height:100%;position:fixed;background-color:#ffffff;z-index:49999;top:0;left:0"),pwaFrame=document.createElement("Iframe"),pwaFrame.setAttribute("style","width:100%;height:100%;border:none");var r="pwa.html";bgInfo.locale&&(r+="?locale="+bgInfo.locale),pwaFrame.src=r,document.body.appendChild(e),e.appendChild(pwaFrame)}}function cacheHandle(){var r,n,o=function(e){if(console.warn("html call reload",e,performance.now()),bgInfo.bNeedReload=!0,!r){if(!function(e){if(n)return!1;if(htmlInfo.bViewInit||e){var r;switch(n=!0,e||(e=""),bgInfo.locale){case"zh_CN":case void 0:r="发现新版本，请更新后再进行游戏！"+e;break;case"zh_TW":r="發現新版本，請更新後再進行遊戲！"+e;break;default:r="Found a new version, please update the game!"+e}if(!confirm(r))return n=!1;n=!1}return!0}())return;bUrlLogout=!0,r=!0,console.warn("===================  window.location.reload =======================",performance.now())}};if("serviceWorker"in navigator){var t,e=htmlInfo.pwa?"pwa_sw.js":"index_serviceworker.js",a=self.location.pathname,i=a.lastIndexOf("/"),l=!1,c=void 0;a=a.substring(0,i+1),console.warn("serviceWorker start",a,navigator.serviceWorker.controller,performance.now()),navigator.serviceWorker.register(e,{scope:a,updateViaCache:"none"}).then(function(e){var r;console.warn("ServiceWorker registration success ",performance.now()),(t=e).update(),navigator.serviceWorker.controller&&(console.warn("serviceWorker controller postMessage ",htmlInfo.version,performance.now()),navigator.serviceWorker.controller.postMessage({type:"VERSION",value:htmlInfo.version})),e.installing?(console.warn("serviceWorker installing",performance.now()),r=e.installing):e.waiting?(console.warn("serviceWorker waiting",performance.now()),r=e.waiting):e.active&&(console.warn("serviceWorker active",performance.now()),r=e.active),r&&r.addEventListener("statechange",function(e){console.warn("serviceWorker statechange",e.target.state,performance.now())}),initHtml(),setTimeout(function(){htmlInfo.pwa&&!navigator.serviceWorker.controller?(alert("sw no controller"),s()):t.waiting&&o("sw is waiting")},5e3)}).catch(function(e){console.error("ServiceWorker registration fail ",e,performance.now()),initHtml()});var s=function(){l||(l=!0,t.unregister().then(function(e){console.warn("serviceWorker unregister",e,performance.now())}).catch(function(e){console.error("ServiceWorker unregister fail ",e,performance.now())}),o("unregisterSW"))};navigator.serviceWorker.addEventListener("message",function(e){var r=e.data;r&&("sw_version"==r.type?alert("sw_version="+r.value,performance.now()):"sw_reload"==r.type?o("sw_reload="+r.value,performance.now()):"sw_msg"==r.type&&console.warn("sw_msg="+r.value,performance.now()))}),navigator.serviceWorker.addEventListener("controllerchange",function(){console.warn("serviceWorker controllerchange!",performance.now()),o("controllerchange")}),window.unregisterSW=s,setInterval(function(){if(null==c&&(c=!1,/iPhone/.test(navigator.userAgent))){var e=navigator.userAgent.match(/OS (\d+)/);e[1]&&+e[1]<15&&(c=!0)}console.warn("serviceWorker update ",c,!!navigator.serviceWorker.controller,performance.now()),t&&t.update().catch(function(e){console.warn("serviceWorker update fail",e.toString(),performance.now())}),navigator.serviceWorker.controller&&navigator.serviceWorker.controller.postMessage({type:"UPDATE",value:c})},6e4)}else if(window.applicationCache&&!htmlInfo.pwa){var f=window.location.pathname.split("/"),w=f[f.length-1];window.location.href=window.location.href.replace(w,"index_a.html")}else alert("not support sw!"),initHtml()}
+//html_block_start//
 		var urlArray = [];
 		var bUrlLogout = false;
 		var bInitWeb = false;
@@ -64,7 +59,6 @@
 		htmlInfo.pwaUrl = "https://cyttest.github.io/pwa/index.html";
 		//現場視頻
 		htmlInfo.sceneStream = ["scene1_1", "scene2_1", "scene5_1"];
-
 		//預設載入樣式 
 		htmlInfo.adUrl = "resource/custom/demo/ad-088fce3b4c.mp4";
 		htmlInfo.videoPoster = "resource/custom/demo/adLogo-8a72100af2.png";
@@ -116,64 +110,7 @@
 			bannerUrl: ["resource/banner/demo/1_P_id_ID-740a0decbc.jpg", "resource/banner/demo/2_P_id_ID-5e7cfff500.jpg", "resource/banner/demo/3_P_id_ID-d770abd914.jpg", "resource/banner/demo/4_P_id_ID-5562d7d65f.jpg", "resource/banner/demo/5_P_id_ID-2254027150.jpg"],
 			bannerUrl_L: ["resource/banner/demo/1_L_id_ID-a5ddd6cd48.jpg", "resource/banner/demo/2_L_id_ID-3333f8ea48.jpg", "resource/banner/demo/3_L_id_ID-f18dfc46b5.jpg", "resource/banner/demo/4_L_id_ID-90e008f380.jpg", "resource/banner/demo/5_L_id_ID-1a4b1dfd24.jpg"]
 		};
-		//APP下載位址
-		htmlInfo.appDownloadUrl = {
-			ym06: {
-				android: "/app/ym06/game_212688e38c.apk",
-				superSignatureUrl: true
-			}, jt11: {
-				android: "/app/jt11/game_a8f6a1c708.apk",
-				superSignatureUrl: true
-			}, aa15: {
-				android: "/app/aa15/game_f97fdaf935.apk",
-				superSignatureUrl: true
-			}, ea12: {
-				android: "/app/ea12/game_907cd5cbf2.apk",
-				// ios: "/app/ea12/game.plist",
-			}, ye06: {
-				android: "/app/ye06/game_717e4aab68.apk",
-				// ios: "/app/ye06/game.plist",
-			}, pc00: {
-				android: "/app/pc00/game_352c542bc0.apk",
-				ios: "/app/pc00/game.plist",
-			}, gj00: {
-				android: "/app/gj00/game_f1249452ba.apk",
-				ios: "/app/gj00/game.plist",
-			}, ok12: {
-				android: "/app/ok12/game_86a5dd7b33.apk",
-				ios: "/app/ok12/game.plist",
-			}, DEMO: {
-				android: "/app/android/game_500810005b.apk",
-				iosTestflight: "https://2tpx5am.cn/aYxK.app"
-			}, default: {
-				android: "/app/android/game_500810005b.apk",
-				iosTestflight: "https://2tpx5am.cn/aYxK.app"
-			},
-		};
-		var videoJS = "resource/js/bgv-03cf17535e.min.js";
-		var thmJS = "resource/js/thm-532513b441.js";
-		var listJS = [
-			"resource/web/style-6168458ad2.css",
-			"libs/index-04383eda08.js",
-			"libs/egret-a3ba4fff55.min.js",
-			"libs/ExternalLib-4683577df1.min.js",
-			"libs/egret-2930803256.web.min.js",
-			"libs/assetsmanager-d8261130f8.min.js",
-			"libs/eui-55be2cff38.min.js",
-			"libs/tween-20f8a48b47.min.js",
-			"libs/game-92641ed6bb.min.js",
-			"libs/promise-1db72e0812.min.js",
-			"libs/dragonBones-d3e55aba9d.min.js",
-			"libs/BGGameLib-e6253c61ef.min.js",
-			"libs/soundjs-be02be4ef1.min.js",
-			"libs/main-a18e68a1a4.js",
-			"libs/h5module-35762eaca9.js"
-		];
-
-		function initHtml() {
-			console.warn("initHtml");
-			if (bInitWeb) return;
-			bInitWeb = true;
+		function checkSn() {
 			var sn = bgInfo.defaultSn;
 			// 專屬客製廳移除customCss 避免影響
 			if (["ym06", "jt11", "aa15", "ok12", "pc00", "ye06", "ea12"].includes(sn))
@@ -272,31 +209,163 @@
 				htmlInfo.adUrl = "resource/custom/vo06/ad-9ae8aea433.jpg";
 				htmlInfo.adUrl_L = "resource/custom/vo06/ad_L-98eb1c6d36.jpg";
 			}
-			initDomain();
-			loadScript(listJS, function () {
-				egret.sys.$START_TIME = htmlInfo.htmlStartTime;
-				window.runEgret();
-			})
 		}
-		htmlInfo.pwaPage = true;
-		htmlInfo.pwa = location.search.indexOf("pwaMode=true") != -1 || navigator.standalone || window.matchMedia("(display-mode: standalone)").matches || window.matchMedia("(display-mode: fullscreen)").matches;
-		console.warn("pwaPage=", htmlInfo.pwaPage, "pwa=", htmlInfo.pwa);
-		if (!htmlInfo.pwa) {
-			var div = document.createElement("div");
-			div.setAttribute("style", "-webkit-overflow-scrolling:touch; overflow: hidden;width:100%;height:100%;position:fixed;background-color:#ffffff;z-index:49999;top:0;left:0");
-			pwaFrame = document.createElement("Iframe");
-			pwaFrame.setAttribute("style", "width:100%;height:100%;border:none");
-			var pwa_html = "pwa.html"
-			if (bgInfo.locale) pwa_html += "?locale=" + bgInfo.locale;
-			pwaFrame.src = pwa_html;
-			document.body.appendChild(div);
-			div.appendChild(pwaFrame);
-		} else {
-			bgInfo.cdnLineDisable = true;
-			cacheHandle();
+		//APP下載位址
+		htmlInfo.appDownloadUrl = {
+			ym06: {
+				android: "/app/ym06/game_212688e38c.apk",
+				superSignatureUrl: true
+			}, jt11: {
+				android: "/app/jt11/game_a8f6a1c708.apk",
+				superSignatureUrl: true
+			}, aa15: {
+				android: "/app/aa15/game_f97fdaf935.apk",
+				superSignatureUrl: true
+			}, ea12: {
+				android: "/app/ea12/game_907cd5cbf2.apk",
+				// ios: "/app/ea12/game.plist",
+			}, ye06: {
+				android: "/app/ye06/game_717e4aab68.apk",
+				// ios: "/app/ye06/game.plist",
+			}, pc00: {
+				android: "/app/pc00/game_352c542bc0.apk",
+				ios: "/app/pc00/game.plist",
+			}, gj00: {
+				android: "/app/gj00/game_f1249452ba.apk",
+				ios: "/app/gj00/game.plist",
+			}, ok12: {
+				android: "/app/ok12/game_86a5dd7b33.apk",
+				ios: "/app/ok12/game.plist",
+			}, DEMO: {
+				android: "/app/android/game_500810005b.apk",
+				iosTestflight: "https://2tpx5am.cn/aYxK.app"
+			}, default: {
+				android: "/app/android/game_500810005b.apk",
+				iosTestflight: "https://2tpx5am.cn/aYxK.app"
+			},
+		};
+		var videoJS = "resource/js/bgv-03cf17535e.min.js";
+		var thmJS = "resource/js/thm-532513b441.js";
+		var listJS = [
+			"resource/web/style-6168458ad2.css",
+			"libs/index-04383eda08.js",
+			"libs/egret-a3ba4fff55.min.js",
+			"libs/ExternalLib-4683577df1.min.js",
+			"libs/egret-2930803256.web.min.js",
+			"libs/assetsmanager-d8261130f8.min.js",
+			"libs/eui-55be2cff38.min.js",
+			"libs/tween-20f8a48b47.min.js",
+			"libs/game-92641ed6bb.min.js",
+			"libs/promise-1db72e0812.min.js",
+			"libs/dragonBones-d3e55aba9d.min.js",
+			"libs/BGGameLib-e6253c61ef.min.js",
+			"libs/soundjs-be02be4ef1.min.js",
+			"libs/main-a18e68a1a4.js",
+			"libs/h5module-35762eaca9.js"
+		];
+		checkPWA();
+
+		function checkSn() {
+			var sn = bgInfo.defaultSn;
+			// 專屬客製廳移除customCss 避免影響
+			if (["ym06", "jt11", "aa15", "ok12", "pc00", "ye06", "ea12"].includes(sn))
+				bgInfo["customCss"] = undefined;
+			else if (["gj00", "ov05"].includes(sn))
+				bgInfo["customCss"] = sn;
+			if (sn == "ad00" || sn == "DEMO") {
+				htmlInfo.sceneStream = ["scene1_1", "scene2_1"];
+			}
+			//sn自訂
+			if (sn == "ym06") {
+				htmlInfo.brand = "UG";
+				htmlInfo.banner = {};
+				htmlInfo.banner.en_US = {
+					bannerUrl: ["resource/banner/ym06/1-2b74ec3269.jpg"], bannerUrl_L: ["resource/banner/ym06/1_L-8ade0101bb.jpg"]
+				};
+				htmlInfo.adUrl = "resource/custom/ym06/adGif-dc7a53e4d3.gif";
+				htmlInfo.adUrl_L = "resource/custom/ym06/adGif_L-289d3c7992.gif";
+				htmlInfo.logoUrl = "resource/custom/ym06/logo_ym06-5e716f1b36.png";
+				htmlInfo.cardBG = "resource/custom/ym06/poker-back-05396294fb.png";
+				htmlInfo.cardBigBG = "resource/custom/ym06/poker-back_big-6d32590747.png";
+				htmlInfo.copyright = "Copyright 2023 UNIVERSAL GAME All Rights Reserved";
+			} else if (sn == "jt11") {
+				htmlInfo.brand = "UB";
+				htmlInfo.banner = {};
+				htmlInfo.banner.zh_CN = {
+					bannerUrl: ["resource/banner/jt11/1_zh_CN-71552bef69.jpg"], bannerUrl_L: ["resource/banner/jt11/1_L_zh_CN-08f32c4406.jpg"]
+				};
+				htmlInfo.banner.zh_TW = {
+					bannerUrl: ["resource/banner/jt11/1_zh_TW-10575fb2f3.jpg"], bannerUrl_L: ["resource/banner/jt11/1_L_zh_TW-18198fce43.jpg"]
+				};
+				htmlInfo.banner.en_US = {
+					bannerUrl: ["resource/banner/jt11/1_en_US-3f6b9e6002.jpg"], bannerUrl_L: ["resource/banner/jt11/1_L_en_US-78a5776ebc.jpg"]
+				};
+				htmlInfo.adUrl = "resource/custom/jt11/ad-6cfe8b76a2.jpg";
+				htmlInfo.adUrl_L = "resource/custom/jt11/ad_L-fc3bc12f18.jpg";
+				htmlInfo.logoUrl = "resource/custom/jt11/logo_ub-048984cab7.png";
+				htmlInfo.cardBG = "resource/custom/jt11/poker-back-fddce97122.png";
+				htmlInfo.cardBigBG = "resource/custom/jt11/poker-back_big-d49dc38163.png";
+				htmlInfo.copyright = "Copyright 2023 UNIVERSAL GAME All Rights Reserved";
+			} else if (sn == "aa15") {
+				htmlInfo.adUrl = "resource/custom/aa15/ad-b0ccf65187.jpg";
+				htmlInfo.adUrl_L = "resource/custom/aa15/ad_L-a97d93bbcc.jpg";
+				htmlInfo.logoUrl = "resource/custom/aa15/logo_hao-70ba2e8cec.png";
+				htmlInfo.brand = "HAOBET";
+				htmlInfo.cardBG = "resource/custom/noLogo/poker-back-3aba9863ec.png";
+				htmlInfo.cardBigBG = "resource/custom/noLogo/poker-back_big-7aca4e1425.png";
+				htmlInfo.banner = {};
+				htmlInfo.banner.en_US = {
+					bannerUrl: ["resource/banner/aa15/1-a2e72b691e.jpg"], bannerUrl_L: ["resource/banner/aa15/1_L-b873e41209.jpg"]
+				};
+			} else if (sn == "ok12") {
+				htmlInfo.brand = "Globalbet";
+				htmlInfo.brandCN = "世博";
+				htmlInfo.banner = {};
+				htmlInfo.banner.en_US = {
+					bannerUrl: ["resource/banner/ok12/1-c99f8d39da.jpg", "resource/banner/ok12/2-830f1bcac7.jpg"],
+					bannerUrl_L: ["resource/banner/ok12/1_L-af272eef43.jpg", "resource/banner/ok12/2_L-7b88f3dc54.jpg"]
+				};
+				htmlInfo.adUrl = "resource/custom/ok12/ad-4f5d6b221c.jpg";
+				htmlInfo.adUrl_L = "resource/custom/ok12/ad_L-6a4329b4b7.jpg";
+				htmlInfo.logoUrl = "resource/custom/ok12/logo-dc51ba0b45.png";
+				htmlInfo.cardBG = "resource/custom/ok12/poker-back-e94ab8c83e.png";
+				htmlInfo.cardBigBG = "resource/custom/ok12/poker-back_big-36efd96b68.png";
+				htmlInfo.copyright = "Copyright 2023 Globalbet All Rights Reserved";
+			}
+			//customCss定製廳
+			if (bgInfo.customCss == "gj00") {
+				htmlInfo.brand = "VF";
+				htmlInfo.banner = {};
+				htmlInfo.banner.en_US = {
+					bannerUrl: ["resource/banner/gj00/1-00732efe8e.jpg"], bannerUrl_L: ["resource/banner/gj00/1_L-dc837031da.jpg"]
+				};
+				htmlInfo.adUrl = "resource/custom/gj00/ad-07290e64ad.jpg";
+				htmlInfo.adUrl_L = "resource/custom/gj00/ad_L-6cf7a2f7bb.jpg";
+				htmlInfo.logoUrl = "resource/custom/gj00/logo_gj00-76c9a903ff.png";
+				htmlInfo.cardBG = "resource/custom/gj00/poker-back-c8dd7672b6.png";
+				htmlInfo.cardBigBG = "resource/custom/gj00/poker-back_big-76ba72505e.png";
+			} else if (bgInfo.customCss == "ov05") {
+				htmlInfo.brand = "LION KING";
+				htmlInfo.banner = {};
+				htmlInfo.banner.en_US = {
+					bannerUrl: ["resource/banner/ov05/1-a744f98a3a.jpg"], bannerUrl_L: ["resource/banner/ov05/1_L-e631f35849.jpg"]
+				};
+				htmlInfo.adUrl = "resource/custom/ov05/ad-90ffaf39dd.jpg";
+				htmlInfo.adUrl_L = "resource/custom/ov05/ad_L-84db3445d7.jpg";
+				htmlInfo.logoUrl = "resource/custom/ov05/logo_ov05-1f0582c6f1.png";
+				htmlInfo.cardBG = "resource/custom/ov05/poker-back-7784e99c66.png";
+				htmlInfo.cardBigBG = "resource/custom/ov05/poker-back_big-ecd7e92ada.png";
+			}
+			//h5定製sn首頁圖
+			else if (sn == "vo06") {
+				htmlInfo.adUrl = "resource/custom/vo06/ad-9ae8aea433.jpg";
+				htmlInfo.adUrl_L = "resource/custom/vo06/ad_L-98eb1c6d36.jpg";
+			} else if (sn == "ka11") {
+				htmlInfo.adUrl = "resource/custom/vo06/ad-9ae8aea433.jpg";
+				htmlInfo.adUrl_L = "resource/custom/vo06/ad_L-98eb1c6d36.jpg";
+			}
 		}
 		//html_block_end//
-		</script>
+</script>
 </body>
-
 </html>
