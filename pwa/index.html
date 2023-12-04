@@ -19,9 +19,11 @@
 <style>body,html{width:100%;height:100%;margin:0;padding:0;border:0;background:#000;font-family:'微软雅黑','微軟正黑體',Arial;-ms-touch-action:none;-webkit-overflow-scrolling:touch}#preloader{border-width:6px;border-style:solid;border-color:#dcdcdc #dcdcdc #f2a63b00 #dcdcdc;border-radius:50%;display:block;width:80px;height:80px;-webkit-animation:rotate 1.2s linear infinite;animation:rotate 1.2s linear infinite;position:fixed;left:50%;top:50%;margin-left:-43px;margin-top:-43px;box-sizing:border-box}@-webkit-keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
 </head>
 <body>
+<div id="bodyBox">
 <div id="mainBox">
 <div id="preloader"></div>
 <div id="game" style="margin:auto;width:100%;height:100%;overflow:hidden;position:absolute" class="egret-player" data-entry-class="Main" data-orientation="auto" data-scale-mode="showAll" data-frame-rate="60" data-content-width="720" data-content-height="1280" data-show-paint-rect="false" data-multi-fingered="2" data-show-fps="false" data-show-log="false" data-show-fps-style="x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.5">
+</div>
 </div>
 </div>
 <script>
@@ -36,7 +38,7 @@
 		//h5網頁設置參數
 		var htmlInfo = {};
 		htmlInfo.client = "h5";
-		htmlInfo.version = "4.0.8.19";
+		htmlInfo.version = "4.0.8.20";
 		htmlInfo.htmlStartTime = Date.now();
 		htmlInfo.bIsRelease = true;
 		htmlInfo.resUrlL = "resource/js/res_L-1fa5d791c3.bgjson";
@@ -247,8 +249,8 @@
 		var videoJS = "resource/js/bgv-03cf17535e.min.js";
 		var thmJS = "resource/js/thm-532513b441.js";
 		var listJS = [
-			"resource/web/style-38c8eb7ea6.css",
-			"libs/index-c92c751351.js",
+			"resource/web/style-3531ce1a62.css",
+			"libs/index-6fe5962583.js",
 			"libs/egret-a3ba4fff55.min.js",
 			"libs/ExternalLib-4683577df1.min.js",
 			"libs/egret-2930803256.web.min.js",
@@ -260,8 +262,8 @@
 			"libs/dragonBones-d3e55aba9d.min.js",
 			"libs/BGGameLib-e6253c61ef.min.js",
 			"libs/soundjs-be02be4ef1.min.js",
-			"libs/main-852cde5673.js",
-			"libs/h5module-7c3182d8be.js"
+			"libs/main-bf417ce93c.js",
+			"libs/h5module-a30eaf7dff.js"
 		];
 		checkPWA();
 
