@@ -9,7 +9,7 @@ let cdnRes=["https://cdnx-beta.hswenfa.com"];const self=this,isPwa=!0,checkHash=
 	"libs/game-92641ed6bb.min.js",
 	"libs/h5module-f89c98ac79.js",
 	"libs/index-3d5875be65.js",
-	"libs/main-14dde22d61.js",
+	"libs/main-f93b1ab4d1.js",
 	"libs/promise-1db72e0812.min.js",
 	"libs/soundjs-be02be4ef1.min.js",
 	"libs/tween-20f8a48b47.min.js",
